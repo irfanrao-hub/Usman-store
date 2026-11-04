@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { isDemo } from "@/lib/db";
+import { siteUrl } from "@/lib/security";
 export const dynamic = "force-dynamic";
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -18,6 +19,6 @@ export default function robots(): MetadataRoute.Robots {
             "/search",
           ],
         },
-    sitemap: (process.env.SITE_URL || "http://127.0.0.1:3100") + "/sitemap.xml",
+    sitemap: siteUrl() + "/sitemap.xml",
   };
 }

@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { z } from "zod";
 import { db, settings, isDemo, transaction, audit, orders } from "./db";
-import { hash, HttpError } from "./security";
+import { hash, HttpError, siteUrl } from "./security";
 import type { CartItem, Quote, Line, Order } from "./types";
 export const cartSchema = z
   .array(
@@ -235,7 +235,7 @@ export function createOrder(
           randomUUID(),
           data.customer.email,
           `Sandbox order ${id}`,
-          `No real payment was taken. Track locally: ${process.env.SITE_URL}/orders/${id}?token=${token}`,
+          `No real payment was taken. Track locally: ${siteUrl()}/orders/${id}?token=${token}`,
         );
     return { order, trackingToken: token, replayed: false };
   });

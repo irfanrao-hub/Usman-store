@@ -8,7 +8,7 @@ import {
   getProduct,
   isDemo,
 } from "@/lib/db";
-import { identity } from "@/lib/security";
+import { identity, siteUrl } from "@/lib/security";
 import { Home } from "@/components/home";
 import { Catalog, CollectionsIndex } from "@/components/catalog";
 import { ProductDetail } from "@/components/product-detail";
@@ -108,7 +108,7 @@ export default async function Page({ params, searchParams }: Props) {
                 "@context": "https://schema.org",
                 "@type": "Organization",
                 name: settings().brand,
-                url: process.env.SITE_URL,
+                url: siteUrl(),
               }),
             }}
           />
@@ -143,7 +143,7 @@ export default async function Page({ params, searchParams }: Props) {
       const related = all.filter(
         (x) => x.id !== p.id && (c ? x.collections.includes(c.id) : true),
       );
-      const base = process.env.SITE_URL || "http://127.0.0.1:3100";
+      const base = siteUrl();
       return (
         <>
           <ProductDetail product={p} collection={c} related={related} />

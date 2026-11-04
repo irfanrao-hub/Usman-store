@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { products, collections, settings, isDemo } from "@/lib/db";
+import { siteUrl } from "@/lib/security";
 import { StoreProvider } from "@/components/store-context";
 import { Shell } from "@/components/shell";
 import "./globals.css";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const s = settings();
   return {
-    metadataBase: new URL(process.env.SITE_URL || "http://127.0.0.1:3100"),
+    metadataBase: new URL(siteUrl()),
     title: {
       default: `${s.brand} — A different perspective`,
       template: `%s | ${s.brand}`,

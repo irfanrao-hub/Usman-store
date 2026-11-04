@@ -19,6 +19,7 @@ import {
   identity,
   requireAdmin,
   sameOrigin,
+  siteUrl,
   rateLimit,
   passwordHash,
   passwordMatches,
@@ -281,7 +282,7 @@ async function handler(
             randomUUID(),
             v.email,
             "Sandbox password recovery",
-            `${process.env.SITE_URL}/account/reset?token=${token}`,
+            `${siteUrl()}/account/reset?token=${token}`,
           );
       }
       return json({

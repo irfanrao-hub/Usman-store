@@ -1,18 +1,70 @@
 import { DatabaseSync } from "node:sqlite";
 import { mkdirSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import type { Product, Variant, Collection, Settings, Order } from "./types";
+import { seedDemoContent } from "./demo-catalog";
 const globalDb = globalThis as unknown as { formeDb?: DatabaseSync };
+export function serverlessHost() {
+  return Boolean(
+    process.env.NETLIFY ||
+      process.env.AWS_LAMBDA_FUNCTION_NAME ||
+      process.env.AWS_EXECUTION_ENV,
+  );
+}
+function migrationSql() {
+  const path = join(process.cwd(), "migrations/001_initial.sql");
+  try {
+    return readFileSync(path, "utf8");
+  } catch {
+    return readFileSync(resolve("migrations/001_initial.sql"), "utf8");
+  }
+}
+function databasePath() {
+  if (process.env.DATABASE_PATH) return resolve(process.env.DATABASE_PATH);
+  if (serverlessHost()) return "/tmp/forme.sqlite";
+  return resolve("data/forme.sqlite");
+}
+function connect(path: string, sql: string) {
+  mkdirSync(dirname(path), { recursive: true });
+  const d = new DatabaseSync(path);
+  d.exec(
+    "PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;",
+  );
+  d.exec(sql);
+  return d;
+}
 export function db() {
   if (!globalDb.formeDb) {
-    const path = resolve(process.env.DATABASE_PATH || "data/forme.sqlite");
-    mkdirSync(dirname(path), { recursive: true });
-    const d = new DatabaseSync(path);
-    d.exec(
-      "PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;",
-    );
-    d.exec(readFileSync(resolve("migrations/001_initial.sql"), "utf8"));
-    globalDb.formeDb = d;
+    const sql = migrationSql();
+    const preferred = databasePath();
+    let opened: DatabaseSync;
+    try {
+      opened = connect(preferred, sql);
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      const fallback = "/tmp/forme.sqlite";
+      if (
+        preferred === fallback ||
+        (code !== "EROFS" && code !== "EACCES" && code !== "EPERM")
+      )
+        throw error;
+      opened = connect(fallback, sql);
+    }
+    globalDb.formeDb = opened;
+    const count = opened.prepare("SELECT COUNT(*) AS n FROM products").get() as {
+      n: number;
+    };
+    if (
+      count.n === 0 &&
+      (process.env.SEED_ON_BOOT === "true" || serverlessHost())
+    ) {
+      const password = process.env.SEED_ADMIN_PASSWORD;
+      seedDemoContent({
+        email: process.env.SEED_ADMIN_EMAIL,
+        password: password && password.length >= 12 ? password : undefined,
+        staffPassword: process.env.SEED_STAFF_PASSWORD,
+      });
+    }
   }
   return globalDb.formeDb;
 }
@@ -123,5 +175,7 @@ export function orders(): Order[] {
     })) as Order[];
 }
 export function isDemo() {
-  return process.env.DEMO_MODE === "true";
+  return (
+    process.env.DEMO_MODE === "true" || process.env.SEED_ON_BOOT === "true"
+  );
 }

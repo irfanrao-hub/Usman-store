@@ -4,6 +4,9 @@ const config: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   devIndicators: false,
   serverExternalPackages: ["node:sqlite"],
+  outputFileTracingIncludes: {
+    "/**": ["./migrations/**/*"],
+  },
   async headers() {
     return [
       {
