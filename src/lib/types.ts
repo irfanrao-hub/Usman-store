@@ -1,0 +1,116 @@
+export type Variant = {
+  id: string;
+  product_id: string;
+  sku: string;
+  size: string;
+  color: string;
+  stock: number;
+};
+export type Collection = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  image: string;
+  position: number;
+  seo_title: string;
+  seo_description: string;
+  version: number;
+};
+export type Product = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  price: number;
+  compare_price: number;
+  status: "draft" | "published" | "archived";
+  images: string[];
+  primary_collection: string | null;
+  size_guide: string;
+  seo_title: string;
+  seo_description: string;
+  version: number;
+  created_at: string;
+  variants: Variant[];
+  collections: string[];
+};
+export type Settings = {
+  brand: string;
+  contactEmail: string;
+  announcement: string;
+  heroTitle: string;
+  heroText: string;
+  heroImage: string;
+  shippingRate: number;
+  freeShippingThreshold: number;
+  regions: string[];
+  returns: string;
+  shippingPolicy: string;
+  privacy: string;
+  nav: { label: string; href: string }[];
+  homeTabs: string[];
+  homeOrder: ("arrivals" | "editorial")[];
+  themeInk: "#111111" | "#243025" | "#202b3c";
+  notifications: boolean;
+};
+export type CartItem = { variantId: string; quantity: number };
+export type Line = {
+  variantId: string;
+  productId: string;
+  title: string;
+  slug: string;
+  sku: string;
+  size: string;
+  color: string;
+  image: string;
+  price: number;
+  quantity: number;
+  stock: number;
+};
+export type Quote = {
+  items: Line[];
+  subtotal: number;
+  discount: number;
+  shipping: number;
+  total: number;
+  discountCode: string;
+};
+export type Customer = {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  region: string;
+};
+export type Order = {
+  id: string;
+  session_id: string;
+  user_id: string | null;
+  idempotency_key: string;
+  fingerprint: string;
+  tracking_hash: string;
+  customer: Customer;
+  items: Line[];
+  subtotal: number;
+  discount: number;
+  shipping: number;
+  total: number;
+  discount_code: string;
+  payment_status: string;
+  fulfilment_status: string;
+  sandbox: number;
+  reserved_until: number | null;
+  stock_restored: number;
+  created_at: string;
+};
+export type PublicUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: "owner" | "staff" | "customer";
+  session_version: number;
+};
+export const money = (paisa: number) =>
+  `Rs. ${new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 }).format(paisa / 100)}`;

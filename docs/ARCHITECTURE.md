@@ -1,0 +1,15 @@
+# Architecture decision
+
+The unrelated Nuance repository is untouched. FORME is a provisional demo identity; original Hanger photos are used with the user's explicit permission for this local build. Products, prices, stock and policies are demonstration data, not a synchronization with Hanger.
+
+Shopify would offer mature hosted checkout, inventory and Shopify administration, but requires an owner account and would not provide the requested independently branded admin. Selected: Next.js App Router + TypeScript, SQLite relational persistence, server rendered catalog, iron-session sealed HttpOnly sessions, scrypt password hashes, local validated media, GSAP/ScrollTrigger. SQLite is the single authority for products, variants, collections, discounts, settings, orders, inventory, users and audit history. Cart storage contains only variant IDs and quantities; server recalculates all money in integer paisa.
+
+Single Node deployment with a persistent disk is the intended local/small-host topology. Production scale-out requires migration to a shared transactional database and object storage. No external commerce backend exists in parallel.
+
+Checkout is explicitly sandbox-only. No card details are requested. Sandbox success, failure, cancellation and delayed settlement are distinct. Orders reserve stock atomically on creation, pending reservations expire after 15 minutes, failed/cancelled orders restore stock once. Successful sandbox orders remain identified as sandbox. Idempotency is scoped to session and request fingerprint. A real provider adapter must use signature-verified webhooks and event uniqueness before enabling live payments; no pretend live webhook endpoint is provided.
+
+With DEMO_MODE disabled, checkout fails closed until a live payment integration is implemented. NODE_ENV=production can still serve an explicitly enabled sandbox. Demo seeding requires explicit DEMO_MODE. Email delivery uses a demo outbox visible only to owner; production email delivery remains unconfigured. Admin and customer authorization are enforced on every server mutation. Staff can manage the catalog and fulfil orders; owner controls settings, discounts, deletion and audit/outbox. Cookie identity is rechecked against the database, including session version and expiry. Mutations require same-origin fetch plus JSON/custom-header CSRF protection.
+
+Canonical products are /products/:slug. Collection context only affects breadcrumbs and the return link, never the canonical. Collections preserve size, color, price, availability, sort and page in query strings. Faceted/search pages are noindex; published products and clean collections appear in the sitemap only outside demo mode. Removed products return 404; changed slugs redirect permanently. Historical order lines retain immutable names, images, SKU and charged prices.
+
+A Node-runtime Next.js proxy resolves catalog existence and stored redirects before rendering starts. This ensures real HTTP 404/308 responses despite React streaming; every API operation still performs its own independent authorization.

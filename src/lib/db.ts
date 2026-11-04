@@ -1,0 +1,127 @@
+import { DatabaseSync } from "node:sqlite";
+import { mkdirSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import type { Product, Variant, Collection, Settings, Order } from "./types";
+const globalDb = globalThis as unknown as { formeDb?: DatabaseSync };
+export function db() {
+  if (!globalDb.formeDb) {
+    const path = resolve(process.env.DATABASE_PATH || "data/forme.sqlite");
+    mkdirSync(dirname(path), { recursive: true });
+    const d = new DatabaseSync(path);
+    d.exec(
+      "PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;",
+    );
+    d.exec(readFileSync(resolve("migrations/001_initial.sql"), "utf8"));
+    globalDb.formeDb = d;
+  }
+  return globalDb.formeDb;
+}
+export function transaction<T>(fn: () => T): T {
+  const d = db();
+  d.exec("BEGIN IMMEDIATE");
+  try {
+    const result = fn();
+    d.exec("COMMIT");
+    return result;
+  } catch (e) {
+    d.exec("ROLLBACK");
+    throw e;
+  }
+}
+export function audit(
+  actor: string,
+  action: string,
+  entity: string,
+  detail: unknown = {},
+) {
+  db()
+    .prepare("INSERT INTO audit(actor,action,entity,detail) VALUES(?,?,?,?)")
+    .run(actor, action, entity, JSON.stringify(detail));
+}
+export function collections(): Collection[] {
+  return db()
+    .prepare("SELECT * FROM collections ORDER BY position,title")
+    .all()
+    .map((r) => ({ ...r })) as unknown as Collection[];
+}
+export function products(includePrivate = false): Product[] {
+  const rows = db()
+    .prepare(
+      `SELECT * FROM products ${includePrivate ? "" : "WHERE status='published'"} ORDER BY created_at DESC,rowid ASC`,
+    )
+    .all();
+  const vs = db()
+    .prepare("SELECT * FROM variants")
+    .all()
+    .map((r) => ({ ...r })) as unknown as Variant[];
+  const links = db().prepare("SELECT * FROM product_collections").all() as {
+    product_id: string;
+    collection_id: string;
+  }[];
+  return rows.map((r) => ({
+    ...r,
+    images: JSON.parse(r.images as string),
+    variants: vs.filter((v) => v.product_id === r.id),
+    collections: links
+      .filter((l) => l.product_id === r.id)
+      .map((l) => l.collection_id),
+  })) as Product[];
+}
+export function getProduct(slug: string, includePrivate = false) {
+  return products(includePrivate).find((p) => p.slug === slug || p.id === slug);
+}
+export const defaultSettings: Settings = {
+  brand: "FORME",
+  contactEmail: "",
+  announcement: "A new point of view. Discover the collection.",
+  heroTitle: "Wear it|your way.",
+  heroText: "Everyday pieces. A different perspective.",
+  heroImage: "/images/hero.jpg",
+  shippingRate: 25000,
+  freeShippingThreshold: 500000,
+  regions: [
+    "Sindh",
+    "Punjab",
+    "Islamabad",
+    "Khyber Pakhtunkhwa",
+    "Balochistan",
+    "Gilgit-Baltistan",
+    "Azad Kashmir",
+  ],
+  returns:
+    "Demo policy: returns and exchanges are not yet offered. The store owner must approve eligibility, timelines and contact details before launch.",
+  shippingPolicy:
+    "Demo shipping: Rs. 250, free from Rs. 5,000. These are configurable examples. No courier or delivery estimate is connected.",
+  privacy:
+    "This local demo stores account, cart, order and contact data on this machine. No payment card information is collected. The owner must supply a production privacy notice before launch.",
+  nav: [
+    { label: "New arrivals", href: "/collections/new-arrivals" },
+    { label: "T-shirts", href: "/collections/tshirts" },
+    { label: "Denim", href: "/collections/denim" },
+    { label: "Shirts", href: "/collections/shirts" },
+    { label: "The edit", href: "/pages/about" },
+  ],
+  homeTabs: ["tshirts", "denim", "shirts"],
+  homeOrder: ["arrivals", "editorial"],
+  themeInk: "#111111",
+  notifications: true,
+};
+export function settings(): Settings {
+  const r = db().prepare("SELECT value FROM settings WHERE id=1").get();
+  return r
+    ? { ...defaultSettings, ...JSON.parse(r.value as string) }
+    : defaultSettings;
+}
+export function orders(): Order[] {
+  return db()
+    .prepare("SELECT * FROM orders ORDER BY created_at DESC")
+    .all()
+    .map((r) => ({
+      ...r,
+      customer: JSON.parse(r.customer as string),
+      items: JSON.parse(r.items as string),
+    })) as Order[];
+}
+export function isDemo() {
+  return process.env.DEMO_MODE === "true";
+}

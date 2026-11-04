@@ -1,0 +1,48 @@
+[
+  {
+    "name": "desktop",
+    "width": 1536,
+    "height": 1024,
+    "cpu": 1,
+    "lcp": 404,
+    "cls": 0,
+    "interactions": [
+      48,
+      48,
+      48,
+      16,
+      16,
+      16
+    ],
+    "errors": [],
+    "failed": [],
+    "title": "A different perspective | FORME",
+    "overflow": false,
+    "note": "Single local lab run. Observed interaction latency is not field INP."
+  },
+  {
+    "name": "admin-mobile",
+    "overflow": false
+  },
+  {
+    "name": "mobile",
+    "width": 390,
+    "height": 844,
+    "cpu": 4,
+    "lcp": 628,
+    "cls": 0,
+    "interactions": [
+      56,
+      56,
+      56,
+      24,
+      24,
+      24
+    ],
+    "errors": [],
+    "failed": [],
+    "title": "A different perspective | FORME",
+    "overflow": false,
+    "note": "Single local lab run. Observed interaction latency is not field INP."
+  }
+]

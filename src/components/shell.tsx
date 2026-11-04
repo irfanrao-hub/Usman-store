@@ -1,0 +1,232 @@
+"use client";
+import { useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  Search,
+  UserRound,
+  ShoppingBag,
+  Menu,
+  ArrowRight,
+  ArrowUpRight,
+} from "lucide-react";
+import { useStore, api } from "./store-context";
+import { Modal, ErrorMessage } from "./ui";
+import { BagContent } from "./cart";
+import { Motion } from "./motion";
+export function Shell({ children }: { children: ReactNode }) {
+  const { settings, items, bagOpen, setBagOpen, demo, notify } = useStore();
+  const [search, setSearch] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const [query, setQuery] = useState("");
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const path = usePathname();
+  const router = useRouter();
+  if (path.startsWith("/admin")) return <>{children}</>;
+  return (
+    <>
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+      <div className="announcement">
+        <Link href="/collections/new-arrivals">{settings.announcement}</Link>
+      </div>
+      <header className="site-header">
+        <button
+          className="icon-button mobile-menu"
+          aria-label="Open navigation"
+          onClick={() => setMenu(true)}
+        >
+          <Menu />
+        </button>
+        <Link
+          className="wordmark"
+          href="/"
+          aria-label={`${settings.brand} home`}
+        >
+          {settings.brand}
+        </Link>
+        <nav className="desktop-nav" aria-label="Main navigation">
+          {settings.nav.map((n) => (
+            <Link
+              key={n.href}
+              className={path === n.href ? "active" : ""}
+              href={n.href}
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="header-actions">
+          <button
+            className="icon-button"
+            aria-label="Search"
+            onClick={() => setSearch(true)}
+          >
+            <Search />
+          </button>
+          <Link
+            className="icon-button account-icon"
+            href="/account"
+            aria-label="My account"
+          >
+            <UserRound />
+          </Link>
+          <button
+            className="icon-button bag-button"
+            aria-label={`Shopping bag, ${items.reduce((s, i) => s + i.quantity, 0)} items`}
+            onClick={() => setBagOpen(true)}
+          >
+            <ShoppingBag />
+            {items.length > 0 && (
+              <span className="bag-count">
+                {items.reduce((s, i) => s + i.quantity, 0)}
+              </span>
+            )}
+          </button>
+        </div>
+      </header>
+      <main id="main">{children}</main>
+      <footer>
+        <div className="footer-grid">
+          <div>
+            <Link className="wordmark" href="/">
+              {settings.brand}
+            </Link>
+            <p>A different perspective on everyday dressing.</p>
+          </div>
+          <div>
+            <h3>Explore</h3>
+            {settings.nav.slice(0, 3).map((n) => (
+              <Link key={n.href} href={n.href}>
+                {n.label}
+              </Link>
+            ))}
+            <Link href="/collections">All collections</Link>
+          </div>
+          <div>
+            <h3>Need a hand?</h3>
+            <Link href="/pages/contact">Contact</Link>
+            <Link href="/pages/shipping">Shipping</Link>
+            <Link href="/pages/returns">Returns</Link>
+            <Link href="/track">Track an order</Link>
+            <Link href="/pages/faq">FAQ</Link>
+          </div>
+          <div>
+            <h3>Stay in the loop</h3>
+            <form
+              className="email-form"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setBusy(true);
+                setError("");
+                try {
+                  const r = await api<{ message: string }>("newsletter", {
+                    email,
+                  });
+                  notify(r.message);
+                  setEmail("");
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              <label className="sr-only" htmlFor="newsletter">
+                Your email address
+              </label>
+              <input
+                id="newsletter"
+                type="email"
+                placeholder="Your email address"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <button disabled={busy} aria-label="Subscribe to newsletter">
+                <ArrowRight size={20} />
+              </button>
+            </form>
+            <ErrorMessage message={error} />
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>
+            © 2026 {settings.brand}.{demo ? " Demo storefront." : ""}
+          </span>
+          <div>
+            <Link href="/pages/privacy">Privacy</Link>
+            <span>/</span>
+            <Link href="/admin">
+              Admin <ArrowUpRight size={12} />
+            </Link>
+          </div>
+        </div>
+      </footer>
+      <Modal open={menu} onClose={() => setMenu(false)} title="Explore" drawer>
+        <nav className="mobile-links">
+          {settings.nav.map((n) => (
+            <Link key={n.href} href={n.href} onClick={() => setMenu(false)}>
+              {n.label}
+              <ArrowUpRight />
+            </Link>
+          ))}
+          <Link href="/account" onClick={() => setMenu(false)}>
+            My account
+            <ArrowUpRight />
+          </Link>
+        </nav>
+      </Modal>
+      <Modal
+        open={search}
+        onClose={() => setSearch(false)}
+        title="Find your next favourite"
+      >
+        <form
+          className="search-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setSearch(false);
+            router.push("/search?q=" + encodeURIComponent(query));
+          }}
+        >
+          <label htmlFor="search-q">Search products</label>
+          <div className="input-action">
+            <input
+              id="search-q"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Try “washed”, “denim”, “shirt”…"
+              required
+              autoComplete="off"
+            />
+            <button className="button" type="submit" aria-label="Submit search">
+              <Search size={20} />
+            </button>
+          </div>
+        </form>
+        <p className="muted">Explore the collections</p>
+        <div className="search-suggestions">
+          {settings.nav.slice(0, 4).map((n) => (
+            <Link key={n.href} href={n.href} onClick={() => setSearch(false)}>
+              {n.label}
+              <ArrowUpRight size={16} />
+            </Link>
+          ))}
+        </div>
+      </Modal>
+      <Modal
+        open={bagOpen}
+        onClose={() => setBagOpen(false)}
+        title={`Your bag (${items.reduce((s, i) => s + i.quantity, 0)})`}
+        drawer
+      >
+        <BagContent drawer />
+      </Modal>
+      <Motion />
+    </>
+  );
+}
