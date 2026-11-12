@@ -45,7 +45,10 @@ test("responsive homepage, tabs, keyboard dialogs and accessibility", async ({
     await page.waitForTimeout(200);
     await page.evaluate(() => window.scrollTo(0, 0));
     if (width !== 360)
-      await page.screenshot({ path: `docs/home-${width}.png`, fullPage: true });
+      await page.screenshot({
+        path: `/tmp/knitkin-qa-home-${width}.png`,
+        fullPage: true,
+      });
   }
   const axe = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
@@ -101,9 +104,9 @@ test("persistent cart, variant selection and sandbox checkout", async ({
   page.on("pageerror", (e) => errors.push(e.message));
   await goto(page, "/products/washed-print-knit-tee");
   await page.getByRole("button", { name: "M", exact: true }).click();
-  await page.getByRole("button", { name: "Add to bag", exact: true }).click();
+  await page.getByRole("button", { name: "Add to cart", exact: true }).click();
   await expect(
-    page.getByRole("dialog", { name: "Your bag (1)" }),
+    page.getByRole("dialog", { name: "Your cart (1)" }),
   ).toBeVisible();
   await page.keyboard.press("Escape");
   await page.reload();
@@ -111,7 +114,7 @@ test("persistent cart, variant selection and sandbox checkout", async ({
     "data-store-ready",
     "true",
   );
-  await page.getByRole("button", { name: "Shopping bag, 1 items" }).click();
+  await page.getByRole("button", { name: "Shopping cart, 1 items" }).click();
   await page.getByRole("link", { name: "Continue to checkout" }).click();
   await expect(
     page.getByRole("heading", { name: "Make it yours." }),
@@ -138,7 +141,7 @@ test("persistent cart, variant selection and sandbox checkout", async ({
     ).status(),
   ).toBe(200);
   await page.screenshot({
-    path: "docs/order-confirmation.png",
+    path: "/tmp/knitkin-qa-order-confirmation.png",
     fullPage: true,
   });
   expect(errors).toEqual([]);
@@ -158,7 +161,10 @@ test("admin creates collection and product with uploaded images and sees a persi
   await expect(
     page.getByRole("heading", { name: /Welcome back/ }),
   ).toBeVisible();
-  await page.screenshot({ path: "docs/admin-dashboard.png", fullPage: true });
+  await page.screenshot({
+    path: "/tmp/knitkin-qa-admin-dashboard.png",
+    fullPage: true,
+  });
   const suffix = Date.now().toString(36);
   const title = "QA Edit " + suffix;
   await page.getByRole("button", { name: "Collections", exact: true }).click();
@@ -395,7 +401,10 @@ test("reduced motion, info pages, SEO and responsive product/admin", async ({
   ).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("button", { name: "Size guide" })).toBeFocused();
-  await page.screenshot({ path: "docs/product-mobile.png", fullPage: true });
+  await page.screenshot({
+    path: "/tmp/knitkin-qa-product-mobile.png",
+    fullPage: true,
+  });
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,

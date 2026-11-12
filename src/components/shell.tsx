@@ -2,18 +2,13 @@
 import { useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Search,
-  UserRound,
-  ShoppingBag,
-  Menu,
-  ArrowRight,
-  ArrowUpRight,
-} from "lucide-react";
+import { Search, Menu, ArrowRight, ArrowUpRight } from "lucide-react";
 import { useStore, api } from "./store-context";
 import { Modal, ErrorMessage } from "./ui";
 import { BagContent } from "./cart";
 import { Motion } from "./motion";
+import { brand } from "@/lib/brand";
+import { StoreIcon } from "./store-icons";
 export function Shell({ children }: { children: ReactNode }) {
   const { settings, items, bagOpen, setBagOpen, demo, notify } = useStore();
   const [search, setSearch] = useState(false);
@@ -46,13 +41,14 @@ export function Shell({ children }: { children: ReactNode }) {
           href="/"
           aria-label={`${settings.brand} home`}
         >
-          {settings.brand}
+          {settings.brand === brand.name ? brand.wordmark : settings.brand}
         </Link>
         <nav className="desktop-nav" aria-label="Main navigation">
           {settings.nav.map((n) => (
             <Link
               key={n.href}
               className={path === n.href ? "active" : ""}
+              aria-current={path === n.href ? "page" : undefined}
               href={n.href}
             >
               {n.label}
@@ -65,21 +61,21 @@ export function Shell({ children }: { children: ReactNode }) {
             aria-label="Search"
             onClick={() => setSearch(true)}
           >
-            <Search />
+            <StoreIcon name="search" />
           </button>
           <Link
             className="icon-button account-icon"
             href="/account"
             aria-label="My account"
           >
-            <UserRound />
+            <StoreIcon name="account" />
           </Link>
           <button
             className="icon-button bag-button"
-            aria-label={`Shopping bag, ${items.reduce((s, i) => s + i.quantity, 0)} items`}
+            aria-label={`Shopping cart, ${items.reduce((s, i) => s + i.quantity, 0)} items`}
             onClick={() => setBagOpen(true)}
           >
-            <ShoppingBag />
+            <StoreIcon name="cart" />
             {items.length > 0 && (
               <span className="bag-count">
                 {items.reduce((s, i) => s + i.quantity, 0)}
@@ -93,9 +89,30 @@ export function Shell({ children }: { children: ReactNode }) {
         <div className="footer-grid">
           <div>
             <Link className="wordmark" href="/">
-              {settings.brand}
+              {settings.brand === brand.name ? brand.wordmark : settings.brand}
             </Link>
-            <p>A different perspective on everyday dressing.</p>
+            <p>Everyday pieces. A little more you.</p>
+            <a href={`mailto:${settings.contactEmail}`}>
+              {settings.contactEmail}
+            </a>
+            <div className="social-links">
+              <a
+                href={brand.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Knit & Kin on Instagram"
+              >
+                <StoreIcon name="instagram" />
+              </a>
+              <a
+                href={brand.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Knit & Kin on Facebook"
+              >
+                <StoreIcon name="facebook" />
+              </a>
+            </div>
           </div>
           <div>
             <h3>Explore</h3>
@@ -116,6 +133,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
           <div>
             <h3>Stay in the loop</h3>
+            <p>New arrivals, fresh perspectives.</p>
             <form
               className="email-form"
               onSubmit={async (e) => {
@@ -155,9 +173,11 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
         <div className="footer-bottom">
           <span>
-            © 2026 {settings.brand}.{demo ? " Demo storefront." : ""}
+            © {new Date().getFullYear()} {settings.brand}.
+            {demo ? " Preview store." : ""}
           </span>
           <div>
+            <a href={brand.website}>knitandkin.com</a>
             <Link href="/pages/privacy">Privacy</Link>
             <span>/</span>
             <Link href="/admin">
@@ -221,7 +241,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <Modal
         open={bagOpen}
         onClose={() => setBagOpen(false)}
-        title={`Your bag (${items.reduce((s, i) => s + i.quantity, 0)})`}
+        title={`Your cart (${items.reduce((s, i) => s + i.quantity, 0)})`}
         drawer
       >
         <BagContent drawer />

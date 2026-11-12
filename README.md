@@ -1,11 +1,17 @@
-# FORME · Local fashion commerce demo
+# Knit & Kin · Fashion storefront
 
-A standalone Next.js + TypeScript storefront and branded administration panel, using the Hanger photographs authorized in the request. The Nuance trial repository has not been changed. FORME is a provisional demo brand; the catalog, inventory and commercial settings are demo data.
+A Next.js + TypeScript storefront for **Knit & Kin**, with a persistent responsive header, swipeable fashion carousel, visible add-to-cart controls, variant selection and a persistent cart. The existing catalog photographs are retained; the catalog, inventory and checkout remain demonstration data.
 
 **Local preview:** http://127.0.0.1:3100  
 **Administration:** http://127.0.0.1:3100/admin
 
-The final handoff includes a running production preview. If it has stopped, run `pnpm start` from this folder after building. Nothing has been committed, pushed or published, and no live payment service is enabled.
+Start the local preview with `pnpm dev`, or use `pnpm build` and `pnpm start` for production testing. Changes in this checkout do not update Netlify until deployed. No live payment service is enabled.
+
+Brand name, email and social links are centralized in `src/lib/brand.ts`. `CANONICAL_SITE_URL=https://knitandkin.com` controls SEO URLs; `SITE_URL` must match the actual application origin for request validation. Change `SITE_URL` when the custom domain is connected. Do not replace the Netlify origin before the domain is serving the app.
+
+The sitemap includes published products, collections and information pages. Metadata includes page titles, descriptions, canonical URLs, Open Graph/Twitter previews and structured store/product/breadcrumb data. Demo mode keeps `noindex` and disallows crawling. Turn off both `DEMO_MODE` and `SEED_ON_BOOT` only after real catalog, durable database, payment integration and policies are ready; submit the canonical sitemap to Search Console after connecting the domain. Rankings are not guaranteed.
+
+On machines with little free disk space, run `DISABLE_WEBPACK_CACHE=true pnpm dev` (also supported for builds) and `pnpm test:e2e --trace=off`. Browser QA outputs are kept under `/tmp`, outside the source checkout.
 
 ## Run locally
 

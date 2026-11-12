@@ -1,38 +1,14 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { Hero } from "./hero";
 import { useStore } from "./store-context";
 import { ProductCard } from "./product-card";
 import { Cta, Photo } from "./ui";
 export function Home() {
   const { products, settings, collections } = useStore();
   const [tab, setTab] = useState("all");
-  const [slide, setSlide] = useState(0);
-  const slides = [
-    {
-      title: settings.heroTitle,
-      text: settings.heroText,
-      href: "/collections/new-arrivals",
-      image: settings.heroImage,
-      second: "/images/gallery-1.jpg",
-    },
-    {
-      title: "A new|daily uniform.",
-      text: "Easy shapes. Endless possibilities.",
-      href: "/collections/tshirts",
-      image: "/images/product-3.jpg",
-      second: "/images/product-4.jpg",
-    },
-    {
-      title: "Your denim.|Your rules.",
-      text: "Find the fit that feels like you.",
-      href: "/collections/denim",
-      image: "/images/denim-2.jpg",
-      second: "/images/denim-1.jpg",
-    },
-  ];
-  const current = slides[slide];
   const tabs = ["all", ...settings.homeTabs];
   const selected = collections.find((c) => c.slug === tab);
   const list = (
@@ -42,43 +18,17 @@ export function Home() {
   ).slice(0, 4);
   return (
     <>
-      <section className="hero">
-        <div className="hero-copy">
-          <h1>
-            {current.title.split("|").map((t, i) => (
-              <span key={i}>{t}</span>
-            ))}
-          </h1>
-          <p>{current.text}</p>
-          <Cta href={current.href}>Explore the collection</Cta>
-          <div className="slide-controls">
-            <span>0{slide + 1} / 03</span>
-            <div>
-              {slides.map((_, i) => (
-                <button
-                  key={i}
-                  className={i === slide ? "selected" : ""}
-                  onClick={() => setSlide(i)}
-                  aria-label={`Show collection ${i + 1}`}
-                  aria-pressed={i === slide}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="hero-photo">
-          <Photo
-            src={current.image}
-            alt="Oversized everyday style from the new collection"
-            eager
-          />
-          <Photo src={current.second} alt="Relaxed unisex silhouette" eager />
-        </div>
-      </section>
+      <Hero />
       <div className="utility-strip">
-        <Link href="/pages/about">Made for every day</Link>
-        <Link href="/collections/tshirts">Unisex, by design</Link>
-        <Link href="/pages/size-guide">Find your fit</Link>
+        <Link href="/pages/about">
+          Made for every day <ArrowRight size={16} />
+        </Link>
+        <Link href="/collections/tshirts">
+          Unisex, by design <ArrowRight size={16} />
+        </Link>
+        <Link href="/pages/size-guide">
+          Find your fit <ArrowRight size={16} />
+        </Link>
       </div>
       <div className="home-sections">
         {settings.homeOrder.includes("arrivals") && (
@@ -164,14 +114,14 @@ export function Home() {
             <div className="editorial-image">
               <Photo
                 src="/images/category-denim.jpg"
-                alt="Relaxed denim from the Hanger reference collection"
+                alt="Relaxed blue denim jeans, an everyday Knit & Kin look"
               />
             </div>
             <div className="editorial-copy">
               <h2>
                 Good denim.
                 <br />
-                Great days.
+                <em>Great days.</em>
               </h2>
               <p>Find your everyday fit.</p>
               <Cta href="/collections/denim">Discover denim</Cta>

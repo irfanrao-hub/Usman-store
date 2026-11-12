@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { isDemo } from "@/lib/db";
-import { siteUrl } from "@/lib/security";
+import { canonicalUrl } from "@/lib/brand";
 export const dynamic = "force-dynamic";
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -17,8 +17,9 @@ export default function robots(): MetadataRoute.Robots {
             "/checkout",
             "/cart",
             "/search",
+            "/track",
           ],
         },
-    sitemap: siteUrl() + "/sitemap.xml",
+    sitemap: canonicalUrl() + "/sitemap.xml",
   };
 }

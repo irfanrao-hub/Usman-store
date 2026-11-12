@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useStore, api } from "./store-context";
 import { ErrorMessage, Photo } from "./ui";
+import { brand } from "@/lib/brand";
+import { StoreIcon } from "./store-icons";
 export function InfoPage({ slug }: { slug: string }) {
   const { settings } = useStore();
   const [message, setMessage] = useState("");
@@ -39,14 +41,13 @@ export function InfoPage({ slug }: { slug: string }) {
               Your perspective.
             </h2>
             <p>
-              {settings.brand} is a demo concept for an everyday wardrobe: easy
-              shapes, expressive textures and pieces that work together.
+              Meet {settings.brand}: an everyday wardrobe of easy shapes,
+              expressive textures and pieces that work together.
             </p>
             <p>
-              This independent local demonstration uses Hanger product
-              photography with permission from the person commissioning the
-              build. FORME is a placeholder brand. It is not Hanger’s official
-              store.
+              From a favourite tee to your go-to denim, find a look that feels
+              like you. Explore the collection and follow Knit &amp; Kin for the
+              latest updates.
             </p>
             <Link className="button" href="/collections/new-arrivals">
               Meet the collection
@@ -59,13 +60,32 @@ export function InfoPage({ slug }: { slug: string }) {
           <div className="prose">
             <h2>Need a hand?</h2>
             <p>
-              Leave a message for the store owner. In this demo, your message is
-              saved locally in administration.
+              Questions about a piece or finding your fit? Email Knit &amp; Kin
+              or find us on Instagram and Facebook.
             </p>
             <p>
-              {settings.contactEmail ||
-                "A customer support email has not been configured yet."}
+              <a href={`mailto:${settings.contactEmail}`}>
+                {settings.contactEmail}
+              </a>
             </p>
+            <div className="social-links">
+              <a
+                href={brand.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Knit & Kin on Instagram"
+              >
+                <StoreIcon name="instagram" />
+              </a>
+              <a
+                href={brand.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Knit & Kin on Facebook"
+              >
+                <StoreIcon name="facebook" />
+              </a>
+            </div>
             <Link href="/pages/faq" className="text-link">
               Read the frequently asked questions
               <ArrowRight size={16} />
@@ -92,6 +112,10 @@ export function InfoPage({ slug }: { slug: string }) {
               }
             }}
           >
+            <p className="muted small">
+              Preview message form: messages are saved in store administration.
+              For a reply, use the email address above.
+            </p>
             <label>
               Name
               <input name="name" required minLength={2} />

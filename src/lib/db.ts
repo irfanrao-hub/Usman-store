@@ -3,12 +3,13 @@ import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import type { Product, Variant, Collection, Settings, Order } from "./types";
 import { seedDemoContent } from "./demo-catalog";
+import { brand } from "./brand";
 const globalDb = globalThis as unknown as { formeDb?: DatabaseSync };
 export function serverlessHost() {
   return Boolean(
     process.env.NETLIFY ||
-      process.env.AWS_LAMBDA_FUNCTION_NAME ||
-      process.env.AWS_EXECUTION_ENV,
+    process.env.AWS_LAMBDA_FUNCTION_NAME ||
+    process.env.AWS_EXECUTION_ENV,
   );
 }
 function migrationSql() {
@@ -51,7 +52,9 @@ export function db() {
       opened = connect(fallback, sql);
     }
     globalDb.formeDb = opened;
-    const count = opened.prepare("SELECT COUNT(*) AS n FROM products").get() as {
+    const count = opened
+      .prepare("SELECT COUNT(*) AS n FROM products")
+      .get() as {
       n: number;
     };
     if (
@@ -123,12 +126,12 @@ export function getProduct(slug: string, includePrivate = false) {
   return products(includePrivate).find((p) => p.slug === slug || p.id === slug);
 }
 export const defaultSettings: Settings = {
-  brand: "FORME",
-  contactEmail: "",
+  brand: brand.name,
+  contactEmail: brand.email,
   announcement: "A new point of view. Discover the collection.",
   heroTitle: "Wear it|your way.",
-  heroText: "Everyday pieces. A different perspective.",
-  heroImage: "/images/hero.jpg",
+  heroText: "Everyday pieces. A little more you.",
+  heroImage: "/images/gallery-1.jpg",
   shippingRate: 25000,
   freeShippingThreshold: 500000,
   regions: [
@@ -160,9 +163,24 @@ export const defaultSettings: Settings = {
 };
 export function settings(): Settings {
   const r = db().prepare("SELECT value FROM settings WHERE id=1").get();
-  return r
+  const value: Settings = r
     ? { ...defaultSettings, ...JSON.parse(r.value as string) }
     : defaultSettings;
+  // Upgrade the original template without replacing the owner's catalog or policies.
+  const legacyBrand = value.brand === "FORME";
+  if (legacyBrand) value.brand = brand.name;
+  if (legacyBrand || !value.contactEmail) value.contactEmail = brand.email;
+  if (
+    legacyBrand &&
+    value.heroText === "Everyday pieces. A different perspective."
+  )
+    value.heroText = defaultSettings.heroText;
+  if (
+    legacyBrand &&
+    ["/images/hero.jpg", "/images/product-1.jpg"].includes(value.heroImage)
+  )
+    value.heroImage = defaultSettings.heroImage;
+  return value;
 }
 export function orders(): Order[] {
   return db()

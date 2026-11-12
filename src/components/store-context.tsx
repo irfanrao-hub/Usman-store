@@ -81,12 +81,18 @@ export function StoreProvider({
   }, []);
   useEffect(() => {
     try {
-      const stored = JSON.parse(localStorage.getItem("forme-cart-v1") || "[]");
+      const stored = JSON.parse(
+        localStorage.getItem("knitandkin-cart-v1") ||
+          localStorage.getItem("forme-cart-v1") ||
+          "[]",
+      );
       if (Array.isArray(stored))
         setItems(
           stored
             .filter(
               (i) =>
+                i !== null &&
+                typeof i === "object" &&
                 typeof i.variantId === "string" &&
                 Number.isInteger(i.quantity) &&
                 i.quantity > 0 &&
@@ -97,15 +103,14 @@ export function StoreProvider({
     } catch {
       /* Preserve the last safe state when storage or revalidation is unavailable. */
     }
-    void refreshUser().then(() => {
-      setReady(true);
-      document.body.dataset.storeReady = "true";
-    });
+    setReady(true);
+    document.body.dataset.storeReady = "true";
+    void refreshUser();
   }, [refreshUser]);
   useEffect(() => {
     if (ready) {
       try {
-        localStorage.setItem("forme-cart-v1", JSON.stringify(items));
+        localStorage.setItem("knitandkin-cart-v1", JSON.stringify(items));
       } catch {
         /* The bag remains usable for this tab when storage is disabled. */
       }
@@ -116,24 +121,33 @@ export function StoreProvider({
     const t = setTimeout(() => setToast(""), 5000);
     return () => clearTimeout(t);
   }, [toast]);
+  const stockFor = (id: string) =>
+    products.flatMap((p) => p.variants).find((v) => v.id === id)?.stock || 0;
   const setQuantity = (id: string, n: number) =>
     setItems((prev) =>
       n <= 0
         ? prev.filter((i) => i.variantId !== id)
         : prev.map((i) =>
-            i.variantId === id ? { ...i, quantity: Math.min(20, n) } : i,
+            i.variantId === id
+              ? { ...i, quantity: Math.max(1, Math.min(20, n, stockFor(id))) }
+              : i,
           ),
     );
   const add = (id: string, quantity: number) => {
+    const stock = stockFor(id);
+    if (!stock || !Number.isInteger(quantity) || quantity < 1) {
+      setToast("Please choose an available size.");
+      return;
+    }
     setItems((prev) => {
       const found = prev.find((i) => i.variantId === id);
       return found
         ? prev.map((i) =>
             i.variantId === id
-              ? { ...i, quantity: Math.min(20, i.quantity + quantity) }
+              ? { ...i, quantity: Math.min(20, stock, i.quantity + quantity) }
               : i,
           )
-        : [...prev, { variantId: id, quantity }];
+        : [...prev, { variantId: id, quantity: Math.min(20, stock, quantity) }];
     });
     setBagOpen(true);
   };

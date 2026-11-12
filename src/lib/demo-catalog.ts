@@ -14,7 +14,7 @@ export function seedDemoContent(options?: {
       .run(
         JSON.stringify({
           ...defaultSettings,
-          heroImage: "/images/product-1.jpg",
+          heroImage: defaultSettings.heroImage,
         }),
       );
     for (const [i, [id, title, image, description]] of (

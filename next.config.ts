@@ -3,6 +3,11 @@ const config: NextConfig = {
   poweredByHeader: false,
   outputFileTracingRoot: process.cwd(),
   devIndicators: false,
+  webpack(config) {
+    // Optional for development/builds on machines with limited free disk space.
+    if (process.env.DISABLE_WEBPACK_CACHE === "true") config.cache = false;
+    return config;
+  },
   serverExternalPackages: ["node:sqlite"],
   outputFileTracingIncludes: {
     "/**": ["./migrations/**/*"],

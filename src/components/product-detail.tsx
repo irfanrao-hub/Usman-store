@@ -173,7 +173,7 @@ export function ProductDetail({
                 add(variant.id, quantity);
               }}
             >
-              Add to bag <Plus size={18} />
+              Add to cart <Plus size={18} />
             </button>
           </div>
           <ErrorMessage message={error} />

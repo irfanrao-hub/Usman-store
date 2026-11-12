@@ -34,7 +34,7 @@ export function BagContent({ drawer = false }: { drawer?: boolean }) {
   if (!ready)
     return (
       <p className="empty" role="status">
-        Opening your bag…
+        Opening your cart…
       </p>
     );
   if (!items.length)
@@ -42,7 +42,7 @@ export function BagContent({ drawer = false }: { drawer?: boolean }) {
       <div className="empty bag-empty">
         <ShoppingBag size={38} strokeWidth={1} />
         <h2>A little room for something good.</h2>
-        <p>Your bag is currently empty.</p>
+        <p>Your cart is currently empty.</p>
         <Link
           className="button"
           href="/collections/new-arrivals"
@@ -117,7 +117,7 @@ export function BagContent({ drawer = false }: { drawer?: boolean }) {
         <div className="progress-line">
           <span
             style={{
-              width: `${Math.min(100, ((quote?.subtotal || 0) / settings.freeShippingThreshold) * 100)}%`,
+              width: `${Math.min(100, ((quote?.subtotal || 0) / (settings.freeShippingThreshold || 1)) * 100)}%`,
             }}
           />
         </div>
@@ -145,7 +145,7 @@ export function BagContent({ drawer = false }: { drawer?: boolean }) {
             href="/cart"
             onClick={() => setBagOpen(false)}
           >
-            View your bag
+            View your cart
           </Link>
         ) : (
           <Cta href="/collections/new-arrivals" outline>
@@ -161,9 +161,9 @@ export function CartPage() {
     <div className="section">
       <div className="page-intro">
         <div className="breadcrumb">
-          <Link href="/">Home</Link> / Bag
+          <Link href="/">Home</Link> / Cart
         </div>
-        <h1>Your bag.</h1>
+        <h1>Your cart.</h1>
       </div>
       <BagContent />
     </div>

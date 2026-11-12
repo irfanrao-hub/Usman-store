@@ -7,6 +7,7 @@
   DEMO_MODE = "true"
   SEED_ON_BOOT = "true"
   SITE_URL = "https://oonline-store.netlify.app"
+  CANONICAL_SITE_URL = "https://knitandkin.com"
   DATABASE_PATH = "/tmp/forme.sqlite"
   SESSION_SECRET = "Ag6sJZ4RZd5bQEZZ3yPcE3C6IijnzQCiAvRfGlwrwA5H2LHFidnobv59iUC7ATRX"
 
@@ -15,5 +16,6 @@
   DEMO_MODE = "true"
   SEED_ON_BOOT = "true"
   SITE_URL = "https://oonline-store.netlify.app"
+  CANONICAL_SITE_URL = "https://knitandkin.com"
   DATABASE_PATH = "/tmp/forme.sqlite"
   SESSION_SECRET = "Ag6sJZ4RZd5bQEZZ3yPcE3C6IijnzQCiAvRfGlwrwA5H2LHFidnobv59iUC7ATRX"

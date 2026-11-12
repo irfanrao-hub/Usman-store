@@ -14,29 +14,6 @@ export function Motion() {
         const mm = gsap.matchMedia();
         mm.add("(prefers-reduced-motion: no-preference)", () => {
           const ctx = gsap.context(() => {
-            if (path === "/") {
-              if (!sessionStorage.getItem("forme-intro")) {
-                gsap.from(".wordmark", {
-                  y: 6,
-                  duration: 0.65,
-                  ease: "power2.out",
-                });
-                sessionStorage.setItem("forme-intro", "1");
-              }
-              gsap.from(".hero-copy > *", {
-                y: 24,
-                opacity: 0.65,
-                stagger: 0.08,
-                duration: 0.75,
-                clearProps: "all",
-                ease: "power3.out",
-              });
-              gsap.from(".hero-photo img", {
-                scale: 1.04,
-                duration: 1.1,
-                clearProps: "all",
-              });
-            }
             gsap.utils.toArray<HTMLElement>(".reveal").forEach((el) => {
               gsap.from(el, {
                 y: 24,
@@ -46,7 +23,10 @@ export function Motion() {
                 scrollTrigger: { trigger: el, start: "top 95%", once: true },
               });
             });
-            if (innerWidth > 760)
+            if (
+              innerWidth > 760 &&
+              document.querySelector(".editorial-image img")
+            )
               gsap.fromTo(
                 ".editorial-image img",
                 { y: -25 },

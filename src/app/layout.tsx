@@ -1,27 +1,42 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { products, collections, settings, isDemo } from "@/lib/db";
-import { siteUrl } from "@/lib/security";
+import { brand, canonicalUrl } from "@/lib/brand";
 import { StoreProvider } from "@/components/store-context";
 import { Shell } from "@/components/shell";
 import "./globals.css";
+import "./storefront.css";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const s = settings();
   return {
-    metadataBase: new URL(siteUrl()),
+    metadataBase: new URL(canonicalUrl()),
     title: {
-      default: `${s.brand} — A different perspective`,
+      default: `${s.brand} — Everyday Clothing in Pakistan`,
       template: `%s | ${s.brand}`,
     },
-    description:
-      "Everyday pieces. A different perspective. Explore relaxed silhouettes and your next everyday favourites.",
+    description: brand.description,
     robots: isDemo() ? { index: false, follow: false } : undefined,
     openGraph: {
       siteName: s.brand,
       type: "website",
-      images: ["/images/product-1.jpg"],
+      locale: "en_PK",
+      title: `${s.brand} — Everyday Clothing in Pakistan`,
+      description: brand.description,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: "Knit & Kin — Wear it your way",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: s.brand,
+      description: brand.description,
+      images: ["/opengraph-image"],
     },
     icons: { icon: "/icon.svg" },
   };
@@ -32,20 +47,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body style={{ "--ink": settings().themeInk } as React.CSSProperties}>
-        <Suspense
-          fallback={<main className="empty">Loading your next favourite…</main>}
+        <StoreProvider
+          products={products()}
+          collections={collections()}
+          settings={settings()}
+          demo={isDemo()}
         >
-          <StoreProvider
-            products={products()}
-            collections={collections()}
-            settings={settings()}
-            demo={isDemo()}
-          >
-            <Shell>{children}</Shell>
-          </StoreProvider>
-        </Suspense>
+          <Shell>{children}</Shell>
+        </StoreProvider>
       </body>
     </html>
   );

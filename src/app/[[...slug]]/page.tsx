@@ -8,7 +8,8 @@ import {
   getProduct,
   isDemo,
 } from "@/lib/db";
-import { identity, siteUrl } from "@/lib/security";
+import { identity } from "@/lib/security";
+import { brand, canonicalUrl } from "@/lib/brand";
 import { Home } from "@/components/home";
 import { Catalog, CollectionsIndex } from "@/components/catalog";
 import { ProductDetail } from "@/components/product-detail";
@@ -52,13 +53,19 @@ export async function generateMetadata({
       ? slug[0] === "pages"
         ? slug[1].replaceAll("-", " ")
         : slug[0].replaceAll("-", " ")
-      : "A different perspective");
+      : "Everyday Clothing in Pakistan");
   const description =
     p?.seo_description ||
     p?.description ||
     c?.seo_description ||
     c?.description ||
-    "Discover everyday pieces at " + settings().brand;
+    (slug.length
+      ? "Discover " +
+        title +
+        " at " +
+        settings().brand +
+        ". Shop relaxed everyday clothing in Pakistan."
+      : brand.description);
   const privatePage = [
     "admin",
     "account",
@@ -84,7 +91,16 @@ export async function generateMetadata({
       title,
       description,
       url: path,
-      images: p?.images?.slice(0, 1) || [c?.image || "/images/product-1.jpg"],
+      siteName: settings().brand,
+      type: "website",
+      locale: "en_PK",
+      images: p?.images?.slice(0, 1) || [c?.image || "/opengraph-image"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: p?.images?.slice(0, 1) || [c?.image || "/opengraph-image"],
     },
   };
 }
@@ -100,19 +116,33 @@ export default async function Page({ params, searchParams }: Props) {
     return (
       <>
         <Home />
-        {!isDemo() && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: jsonLd({
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: jsonLd([
+              {
                 "@context": "https://schema.org",
-                "@type": "Organization",
+                "@type": "OnlineStore",
+                "@id": canonicalUrl() + "/#organization",
                 name: settings().brand,
-                url: siteUrl(),
-              }),
-            }}
-          />
-        )}
+                alternateName: "knitandkin",
+                url: canonicalUrl(),
+                logo: canonicalUrl() + "/icon.svg",
+                email: settings().contactEmail,
+                sameAs: [brand.instagram, brand.facebook],
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "@id": canonicalUrl() + "/#website",
+                name: settings().brand,
+                url: canonicalUrl(),
+                inLanguage: "en-PK",
+                publisher: { "@id": canonicalUrl() + "/#organization" },
+              },
+            ]),
+          }}
+        />
       </>
     );
   if (slug[0] === "collections" && slug.length === 1)
@@ -143,7 +173,7 @@ export default async function Page({ params, searchParams }: Props) {
       const related = all.filter(
         (x) => x.id !== p.id && (c ? x.collections.includes(c.id) : true),
       );
-      const base = siteUrl();
+      const base = canonicalUrl();
       return (
         <>
           <ProductDetail product={p} collection={c} related={related} />
@@ -155,6 +185,7 @@ export default async function Page({ params, searchParams }: Props) {
                   "@context": "https://schema.org",
                   "@type": "Product",
                   name: p.title,
+                  brand: { "@type": "Brand", name: settings().brand },
                   description: p.description,
                   image: p.images.map((i) => base + i),
                   sku: p.variants[0]?.sku,

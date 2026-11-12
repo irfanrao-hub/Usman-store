@@ -2,6 +2,7 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "tests/e2e",
   fullyParallel: false,
+  outputDir: "/tmp/knitkin-playwright-results",
   workers: 1,
   timeout: 60000,
   use: {
@@ -12,5 +13,8 @@ export default defineConfig({
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },
-  reporter: [["list"], ["json", { outputFile: "docs/e2e-results.json" }]],
+  reporter: [
+    ["list"],
+    ["json", { outputFile: "/tmp/knitkin-e2e-results.json" }],
+  ],
 });

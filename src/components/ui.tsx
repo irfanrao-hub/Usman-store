@@ -112,11 +112,13 @@ export function Photo({
   alt,
   className = "",
   eager = false,
+  sizes = "(max-width: 800px) 100vw, 50vw",
 }: {
   src: string;
   alt: string;
   className?: string;
   eager?: boolean;
+  sizes?: string;
 }) {
   const [broken, setBroken] = useState("");
   const actual = !src || broken === src ? "/images/fallback.svg" : src;
@@ -127,7 +129,7 @@ export function Photo({
       className={className}
       width={1000}
       height={1250}
-      sizes="(max-width: 800px) 100vw, 50vw"
+      sizes={sizes}
       loading={eager ? "eager" : "lazy"}
       fetchPriority={eager ? "high" : "auto"}
       onError={() => setBroken(src)}

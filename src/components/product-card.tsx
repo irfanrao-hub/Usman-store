@@ -5,6 +5,7 @@ import { Plus, ArrowUpRight } from "lucide-react";
 import { type Product, money } from "@/lib/types";
 import { Photo, Modal } from "./ui";
 import { useStore } from "./store-context";
+import { StoreIcon } from "./store-icons";
 export function ProductCard({
   product: p,
   from,
@@ -33,9 +34,15 @@ export function ProductCard({
             src={p.images[0]}
             alt={`${p.title} in ${p.variants[0]?.color || ""}`}
             eager={priority}
+            sizes="(max-width: 900px) 50vw, 25vw"
           />
           {p.images.length > 1 && (
-            <Photo className="alternate" src={p.images[1]} alt="" />
+            <Photo
+              className="alternate"
+              src={p.images[1]}
+              alt=""
+              sizes="(max-width: 900px) 50vw, 25vw"
+            />
           )}
         </Link>
         {!available ? (
@@ -43,14 +50,23 @@ export function ProductCard({
         ) : discount > 0 ? (
           <span className="product-badge">{discount}% OFF</span>
         ) : null}
-        <button
-          className="quick-add"
-          aria-label={`Choose size for ${p.title}`}
-          onClick={() => setQuick(true)}
-        >
-          <Plus size={20} />
-        </button>
       </div>
+      <button
+        className="card-add"
+        disabled={!available}
+        aria-label={
+          available
+            ? `Add ${p.title} to cart — choose size`
+            : `${p.title} is sold out`
+        }
+        onClick={() => {
+          setVariant("");
+          setQuick(true);
+        }}
+      >
+        {available ? "Add to cart" : "Sold out"}
+        <StoreIcon name="cart" />
+      </button>
       <Link
         className="product-title"
         href={`/products/${p.slug}${from ? "?from=" + encodeURIComponent(from) : ""}`}
@@ -98,7 +114,7 @@ export function ProductCard({
                 add(variant, 1);
               }}
             >
-              Add to bag <Plus size={18} />
+              Add to cart <Plus size={18} />
             </button>
             <Link
               className="text-link"
