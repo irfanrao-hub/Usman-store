@@ -3,6 +3,7 @@ import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import type { Product, Variant, Collection, Settings, Order } from "./types";
 import { seedDemoContent } from "./demo-catalog";
+import { upgradeLegacyDemo } from "./kidswear-demo";
 import { brand } from "./brand";
 const globalDb = globalThis as unknown as { formeDb?: DatabaseSync };
 export function serverlessHost() {
@@ -68,6 +69,7 @@ export function db() {
         staffPassword: process.env.SEED_STAFF_PASSWORD,
       });
     }
+    if (isDemo()) upgradeLegacyDemo(opened, defaultSettings);
   }
   return globalDb.formeDb;
 }
@@ -128,10 +130,10 @@ export function getProduct(slug: string, includePrivate = false) {
 export const defaultSettings: Settings = {
   brand: brand.name,
   contactEmail: brand.email,
-  announcement: "A new point of view. Discover the collection.",
-  heroTitle: "Wear it|your way.",
-  heroText: "Everyday pieces. A little more you.",
-  heroImage: "/images/gallery-1.jpg",
+  announcement: "Little outfits. Big adventures.",
+  heroTitle: "Little outfits.|Big|adventures.",
+  heroText: "Everyday kidswear for their little world.",
+  heroImage: "/images/kids-hero.webp",
   shippingRate: 25000,
   freeShippingThreshold: 500000,
   regions: [
@@ -151,15 +153,16 @@ export const defaultSettings: Settings = {
     "This local demo stores account, cart, order and contact data on this machine. No payment card information is collected. The owner must supply a production privacy notice before launch.",
   nav: [
     { label: "New arrivals", href: "/collections/new-arrivals" },
-    { label: "T-shirts", href: "/collections/tshirts" },
-    { label: "Denim", href: "/collections/denim" },
-    { label: "Shirts", href: "/collections/shirts" },
-    { label: "The edit", href: "/pages/about" },
+    { label: "Summer", href: "/collections/summer" },
+    { label: "Winter", href: "/collections/winter" },
+    { label: "All categories", href: "/collections" },
+    { label: "About us", href: "/pages/about" },
   ],
-  homeTabs: ["tshirts", "denim", "shirts"],
-  homeOrder: ["arrivals", "editorial"],
-  themeInk: "#111111",
+  homeTabs: ["summer", "winter"],
+  homeOrder: ["editorial", "arrivals"],
+  themeInk: "#59305d",
   notifications: true,
+  activityWidgets: true,
 };
 export function settings(): Settings {
   const r = db().prepare("SELECT value FROM settings WHERE id=1").get();

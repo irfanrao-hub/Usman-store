@@ -958,7 +958,7 @@ function ProductEditor({
         id: undefined,
         product_id: "",
         sku: "",
-        size: "S",
+        size: "2–3 Y",
         color: "",
         stock: 0,
       },
@@ -1573,13 +1573,13 @@ function SettingsEditor({
                 onChange={(e) => change("homeOrder", e.target.value.split(","))}
               >
                 <option value="arrivals,editorial">
-                  New arrivals, then editorial
+                  New arrivals, then season cards
                 </option>
                 <option value="editorial,arrivals">
-                  Editorial, then new arrivals
+                  Season cards, then new arrivals
                 </option>
                 <option value="arrivals">New arrivals only</option>
-                <option value="editorial">Editorial only</option>
+                <option value="editorial">Season cards only</option>
               </select>
             </label>
             <label>
@@ -1591,6 +1591,7 @@ function SettingsEditor({
               >
                 <option value="#111111">Classic black</option>
                 <option value="#243025">Deep olive</option>
+                <option value="#59305d">Kidswear plum</option>
                 <option value="#202b3c">Midnight blue</option>
               </select>
             </label>
@@ -1705,6 +1706,20 @@ function SettingsEditor({
               />
               Save demo order emails to outbox
             </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={value.activityWidgets}
+                onChange={(e) => change("activityWidgets", e.target.checked)}
+              />
+              Show live product viewing and recent-order notices
+            </label>
+            <p className="muted small">
+              Uses actual activity only. Viewing counts include the current
+              shopper. Recent-order notices exclude all test orders and customer
+              details. These widgets stay hidden on ephemeral Netlify/Lambda
+              storage.
+            </p>
           </section>
         </div>
       </div>

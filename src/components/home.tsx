@@ -1,13 +1,16 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Hero } from "./hero";
 import { useStore } from "./store-context";
 import { ProductCard } from "./product-card";
-import { Cta, Photo } from "./ui";
+import { Cta } from "./ui";
+import { SeasonCards, CategoryCircles } from "./home-discovery";
+import { RecentPurchase } from "./activity";
+import { HomeFaq } from "./faq";
 export function Home() {
-  const { products, settings, collections } = useStore();
+  const { products, settings, collections, demo } = useStore();
   const [tab, setTab] = useState("all");
   const tabs = ["all", ...settings.homeTabs];
   const selected = collections.find((c) => c.slug === tab);
@@ -20,24 +23,48 @@ export function Home() {
     <>
       <Hero />
       <div className="utility-strip">
-        <Link href="/pages/about">
-          Made for every day <ArrowRight size={16} />
+        <Link href="/collections/summer">
+          Summer days <ArrowRight size={16} />
         </Link>
-        <Link href="/collections/tshirts">
-          Unisex, by design <ArrowRight size={16} />
+        <Link href="/collections/winter">
+          Winter layers <ArrowRight size={16} />
         </Link>
         <Link href="/pages/size-guide">
-          Find your fit <ArrowRight size={16} />
+          Find their size <ArrowRight size={16} />
         </Link>
       </div>
       <div className="home-sections">
+        {settings.homeOrder.includes("editorial") && (
+          <section
+            className="season-section section"
+            style={{ order: settings.homeOrder.indexOf("editorial") * 2 }}
+            aria-labelledby="seasons-heading"
+          >
+            <h2 id="seasons-heading">A season for every adventure</h2>
+            <SeasonCards />
+          </section>
+        )}
+        <section
+          className="category-section section"
+          style={{ order: 1 }}
+          aria-labelledby="categories-heading"
+        >
+          <div className="section-heading">
+            <h2 id="categories-heading">Shop all categories</h2>
+            <Link href="/collections" className="text-link">
+              Explore all
+              <ArrowRight size={18} />
+            </Link>
+          </div>
+          <CategoryCircles />
+        </section>
         {settings.homeOrder.includes("arrivals") && (
           <section
             className="arrivals section"
-            style={{ order: settings.homeOrder.indexOf("arrivals") }}
+            style={{ order: settings.homeOrder.indexOf("arrivals") * 2 }}
           >
             <div className="section-heading">
-              <h2>New &amp; noteworthy</h2>
+              <h2>Little wardrobe favourites</h2>
               <div
                 className="tabs"
                 role="tablist"
@@ -99,6 +126,11 @@ export function Home() {
                 A new edit is on its way. Check back soon.
               </p>
             )}
+            {demo && (
+              <p className="sample-catalogue">
+                Sample catalogue · AI-generated imagery · Test orders only
+              </p>
+            )}
             <div className="center">
               <Cta href="/collections/new-arrivals" outline>
                 View all arrivals
@@ -106,34 +138,9 @@ export function Home() {
             </div>
           </section>
         )}
-        {settings.homeOrder.includes("editorial") && (
-          <section
-            className="editorial"
-            style={{ order: settings.homeOrder.indexOf("editorial") }}
-          >
-            <div className="editorial-image">
-              <Photo
-                src="/images/category-denim.jpg"
-                alt="Relaxed blue denim jeans, an everyday Knit & Kin look"
-              />
-            </div>
-            <div className="editorial-copy">
-              <h2>
-                Good denim.
-                <br />
-                <em>Great days.</em>
-              </h2>
-              <p>Find your everyday fit.</p>
-              <Cta href="/collections/denim">Discover denim</Cta>
-            </div>
-          </section>
-        )}
       </div>
-      <div className="editorial-note">
-        <Link href="/pages/about">
-          Meet the everyday edit <ArrowUpRight size={16} />
-        </Link>
-      </div>
+      <HomeFaq />
+      <RecentPurchase />
     </>
   );
 }

@@ -7,6 +7,12 @@ import type { Collection, Product } from "@/lib/types";
 import { useStore } from "./store-context";
 import { ProductCard } from "./product-card";
 import { Photo } from "./ui";
+import {
+  SeasonCards,
+  CategoryCircles,
+  SeasonCategories,
+} from "./home-discovery";
+import { seasons, clothingCategories } from "@/lib/kidswear";
 export function CollectionsIndex() {
   const { collections } = useStore();
   return (
@@ -15,22 +21,37 @@ export function CollectionsIndex() {
         <span className="breadcrumb">
           <Link href="/">Home</Link> / Collections
         </span>
-        <h1>Find your form.</h1>
-        <p>A few good pieces. A thousand ways to wear them.</p>
+        <h1>Shop all categories</h1>
+        <p>
+          Find their next favourite. Start with a season or explore a clothing
+          category.
+        </p>
+      </div>
+      <SeasonCards />
+      <div className="index-categories">
+        <h2>A little of everything</h2>
+        <CategoryCircles />
       </div>
       <div className="collection-grid">
-        {collections.map((c) => (
-          <Link key={c.id} href={"/collections/" + c.slug}>
-            <div>
-              <Photo src={c.image} alt={c.title} />
-            </div>
-            <h2>
-              {c.title}
-              <ArrowRight size={22} />
-            </h2>
-            <p>{c.description}</p>
-          </Link>
-        ))}
+        {collections
+          .filter(
+            (c) =>
+              ![...seasons, ...clothingCategories].some(
+                (slug) => slug === c.slug,
+              ),
+          )
+          .map((c) => (
+            <Link key={c.id} href={"/collections/" + c.slug}>
+              <div>
+                <Photo src={c.image} alt={c.title} />
+              </div>
+              <h2>
+                {c.title}
+                <ArrowRight size={22} />
+              </h2>
+              <p>{c.description}</p>
+            </Link>
+          ))}
       </div>
     </div>
   );
@@ -44,12 +65,14 @@ export function Catalog({
   products: Product[];
   search?: boolean;
 }) {
-  const { ready } = useStore();
+  const { ready, collections, demo } = useStore();
   const params = useSearchParams();
   const router = useRouter();
   const path = usePathname();
   const [filters, setFilters] = useState(false);
   const query = params.get("q") || "";
+  const category = params.get("category") || "";
+  const categoryId = collections.find((c) => c.slug === category)?.id;
   const size = params.get("size") || "";
   const color = params.get("color") || "";
   const sort = params.get("sort") || "featured";
@@ -64,6 +87,7 @@ export function Catalog({
   ];
   const filtered = products.filter(
     (p) =>
+      (!category || p.collections.includes(categoryId || "missing")) &&
       (!search ||
         [p.title, p.description, ...p.variants.map((v) => v.color)]
           .join(" ")
@@ -122,6 +146,14 @@ export function Catalog({
           <p>{collection?.description}</p>
         )}
       </div>
+      {seasons.some((s) => s === collection?.slug) && (
+        <SeasonCategories season={collection!.slug} current={category} />
+      )}
+      {demo && (
+        <p className="muted small">
+          Kidswear preview · Sample products and prices · Test orders only
+        </p>
+      )}
       <div className="filter-bar">
         <button
           className="filter-toggle"

@@ -14,6 +14,7 @@ import type { Product, Collection } from "@/lib/types";
 import { money } from "@/lib/types";
 import { useStore } from "./store-context";
 import { Photo, Quantity, Modal, ErrorMessage } from "./ui";
+import { ProductActivity } from "./activity";
 import { ProductCard, swatch } from "./product-card";
 export function ProductDetail({
   product: p,
@@ -88,6 +89,9 @@ export function ProductDetail({
             {collection?.title.toLowerCase() || "collection"}
           </Link>
           <h1>{p.title}</h1>
+          {p.id.startsWith("kids-demo-") && (
+            <p className="muted small">Sample product · AI-generated photo</p>
+          )}
           <div className="detail-price">
             <span>{money(p.price)}</span>
             {p.compare_price > p.price && (
@@ -100,8 +104,9 @@ export function ProductDetail({
             )}
           </div>
           <p className="detail-lead">
-            An everyday favourite. Make it your own.
+            A little outfit for their next big adventure.
           </p>
+          <ProductActivity productId={p.id} />
           <fieldset className="variant-field">
             <legend>Color — {color}</legend>
             <div className="color-options">

@@ -20,10 +20,12 @@ test("responsive homepage, tabs, keyboard dialogs and accessibility", async ({
   page.on("pageerror", (e) => errors.push(e.message));
   await goto(page, "/");
   await expect(
-    page.getByRole("heading", { name: "Wear it your way." }),
+    page.getByRole("heading", { name: "Little outfits. Big adventures." }),
   ).toBeVisible();
-  await page.getByRole("tab", { name: "Denim", exact: true }).click();
-  await expect(page.locator(".product-card").first()).toContainText("Jeans");
+  await page.getByRole("tab", { name: "Winter", exact: true }).click();
+  await expect(page.locator(".product-card").first()).toContainText(
+    "Sweatshirt",
+  );
   await page.getByRole("tab", { name: "All", exact: true }).click();
   const search = page.getByRole("button", { name: "Search", exact: true });
   await search.focus();
@@ -61,9 +63,9 @@ test("collection URL filters, product breadcrumbs, backward and forward navigati
 }) => {
   await goto(page, "/collections/tshirts");
   await page.getByRole("button", { name: "Filter", exact: true }).click();
-  await page.getByLabel("Size", { exact: true }).selectOption("M");
+  await page.getByLabel("Size", { exact: true }).selectOption("3–4 Y");
   await page.getByLabel("Sort products").selectOption("price-asc");
-  await expect(page).toHaveURL(/size=M/);
+  await expect(page).toHaveURL(/size=3%E2%80%934\+Y/);
   await expect(page).toHaveURL(/sort=price-asc/);
   await page.reload();
   await expect(page.locator("body")).toHaveAttribute(
@@ -71,7 +73,7 @@ test("collection URL filters, product breadcrumbs, backward and forward navigati
     "true",
   );
   await page.getByRole("button", { name: /Filter/ }).click();
-  await expect(page.getByLabel("Size", { exact: true })).toHaveValue("M");
+  await expect(page.getByLabel("Size", { exact: true })).toHaveValue("3–4 Y");
   await page.locator(".product-card .product-title").first().click();
   await expect(page.locator(".product-info h1")).toBeVisible();
   await expect(page.locator(".breadcrumb")).toContainText("T-shirts");
@@ -79,7 +81,7 @@ test("collection URL filters, product breadcrumbs, backward and forward navigati
   await expect(
     page.getByRole("heading", { name: "T-shirts", exact: true }),
   ).toBeVisible();
-  await expect(page).toHaveURL(/size=M/);
+  await expect(page).toHaveURL(/size=3%E2%80%934\+Y/);
   await page.goForward();
   await expect(page.locator(".product-info h1")).toBeVisible();
   expect(
@@ -102,8 +104,8 @@ test("persistent cart, variant selection and sandbox checkout", async ({
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await goto(page, "/products/washed-print-knit-tee");
-  await page.getByRole("button", { name: "M", exact: true }).click();
+  await goto(page, "/products/sunshine-graphic-tee");
+  await page.getByRole("button", { name: "3–4 Y", exact: true }).click();
   await page.getByRole("button", { name: "Add to cart", exact: true }).click();
   await expect(
     page.getByRole("dialog", { name: "Your cart (1)" }),
@@ -319,7 +321,7 @@ test("permissions, CSRF, staff limits, malformed uploads and duplicate checkout 
   });
   expect(upload.status()).toBe(400);
   const body = {
-    items: [{ variantId: "v-2-M", quantity: 1 }],
+    items: [{ variantId: "kids-v-2-2", quantity: 1 }],
     customer: {
       name: "Retry Customer",
       email: "retry@example.test",
@@ -394,7 +396,7 @@ test("reduced motion, info pages, SEO and responsive product/admin", async ({
     ),
   ).toBe("auto");
   await page.setViewportSize({ width: 390, height: 844 });
-  await goto(page, "/products/washed-print-knit-tee");
+  await goto(page, "/products/sunshine-graphic-tee");
   await page.getByRole("button", { name: "Size guide" }).click();
   await expect(
     page.getByRole("dialog", { name: "Find your fit" }),
@@ -412,7 +414,7 @@ test("reduced motion, info pages, SEO and responsive product/admin", async ({
   ).toBe(true);
   for (const route of [
     "/collections",
-    "/search?q=denim",
+    "/search?q=romper",
     "/cart",
     "/track",
     "/pages/about",
@@ -557,7 +559,7 @@ test("owner catalog lifecycle, settings version conflicts and discounts", async 
     await request.post("/api/cart/quote", {
       headers,
       data: {
-        items: [{ variantId: "v-2-S", quantity: 1 }],
+        items: [{ variantId: "kids-v-2-1", quantity: 1 }],
         discountCode: code,
       },
     })

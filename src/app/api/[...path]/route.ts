@@ -41,6 +41,11 @@ import {
   deleteEntity,
   settingsSchema,
 } from "@/lib/admin";
+import {
+  activityEnabled,
+  latestPublicPurchase,
+  recordProductView,
+} from "@/lib/activity";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const json = (data: unknown, status = 200) =>
@@ -84,6 +89,10 @@ async function handler(
         collections: collections(),
         settings: settings(),
         demo: isDemo(),
+      });
+    if (key === "activity/recent" && method === "GET")
+      return json({
+        recent: activityEnabled() ? latestPublicPurchase() : null,
       });
     if (key === "auth/logout" && method === "POST") {
       s.destroy();
@@ -213,6 +222,26 @@ async function handler(
       body = await req.json();
     } catch {
       throw new HttpError(400, "Invalid JSON request.");
+    }
+    if (key === "activity/view" && method === "POST") {
+      const value = z
+        .object({
+          productId: z.string().min(1).max(150),
+          tabId: z.uuid(),
+          active: z.boolean(),
+        })
+        .parse(body);
+      if (!activityEnabled()) return json({ enabled: false });
+      rateLimit("presence:" + s.sid, 120, 60_000);
+      return json({
+        enabled: true,
+        viewers: recordProductView(
+          value.productId,
+          s.sid,
+          value.tabId,
+          value.active,
+        ),
+      });
     }
     if (key === "auth/login") {
       const v = z

@@ -7,7 +7,7 @@ export const brand = {
   instagram: "https://www.instagram.com/knitandkinofficial/",
   facebook: "https://web.facebook.com/profile.php?id=61596132126275",
   description:
-    "Explore Knit & Kin's everyday clothing in Pakistan. Discover relaxed T-shirts, shirts and denim, find your fit and build your everyday wardrobe.",
+    "Explore Knit & Kin kidswear in Pakistan. Shop Summer and Winter collections, from T-shirts, co-ord sets, dresses and rompers to sweatshirts and jackets.",
 } as const;
 
 export function canonicalUrl() {

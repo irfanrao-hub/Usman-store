@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { brand } from "@/lib/brand";
 
-export const alt = "Knit & Kin — Everyday pieces. A little more you.";
+export const alt = "Knit & Kin — Little outfits. Big adventures.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -11,8 +11,8 @@ export default function OpenGraphImage() {
       style={{
         width: "100%",
         height: "100%",
-        background: "#e8e7e3",
-        color: "#111",
+        background: "#f5ecf6",
+        color: "#59305d",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -25,16 +25,16 @@ export default function OpenGraphImage() {
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            fontSize: 112,
+            fontSize: 90,
             fontWeight: 600,
-            letterSpacing: "-7px",
+            letterSpacing: "-4px",
             lineHeight: 1,
           }}
         >
-          Wear it your way.
+          Their little world.
         </div>
         <div style={{ fontSize: 28, marginTop: 30 }}>
-          Everyday pieces. A little more you.
+          Little outfits. Big adventures.
         </div>
       </div>
       <div
@@ -46,7 +46,7 @@ export default function OpenGraphImage() {
           paddingTop: 22,
         }}
       >
-        <span>T-shirts / Shirts / Denim</span>
+        <span>Kidswear / Summer / Winter</span>
         <span>knitandkin.com</span>
       </div>
     </div>,

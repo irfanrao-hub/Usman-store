@@ -1,6 +1,8 @@
-# Knit & Kin · Fashion storefront
+# Knit & Kin · Kidswear storefront
 
-A Next.js + TypeScript storefront for **Knit & Kin**, with a persistent responsive header, swipeable fashion carousel, visible add-to-cart controls, variant selection and a persistent cart. The existing catalog photographs are retained; the catalog, inventory and checkout remain demonstration data.
+A Next.js + TypeScript kidswear storefront for **Knit & Kin**. The November 13 update adds Summer/Winter menus with clothing categories, a pastel purple design, a swipeable kidswear hero, category browsing, homepage FAQs, age-size selection and visible add-to-cart controls.
+
+The catalogue contains **eight clearly labelled sample products with AI-generated photography**. Prices, stock and sizes are examples, and checkout creates sandbox orders only. Replace them with verified merchant inventory before launch. Original adult demo products are archived by the guarded demo upgrade; their variants and historic order data are retained. Custom catalogues are not automatically replaced.
 
 **Local preview:** http://127.0.0.1:3100  
 **Administration:** http://127.0.0.1:3100/admin
@@ -13,6 +15,20 @@ The sitemap includes published products, collections and information pages. Meta
 
 On machines with little free disk space, run `DISABLE_WEBPACK_CACHE=true pnpm dev` (also supported for builds) and `pnpm test:e2e --trace=off`. Browser QA outputs are kept under `/tmp`, outside the source checkout.
 
+## Kidswear categories and activity
+
+In Administration → Products, assign each real product to **Summer or Winter**, its clothing type, and optionally New arrivals. Season submenus and filters use these collection memberships. The six homepage clothing categories are T-shirts, Co-ord sets, Dresses, Rompers, Sweatshirts and Jackets. Additional clothing collections appear on the all-categories page and in matching seasonal menus. Update collection pictures and the homepage hero from administration.
+
+Homepage FAQs share the same component as `/pages/faq`. Shipping and returns answers read the owner's settings; no competitor guarantees or reviews were copied. Product descriptions, title metadata, social previews and the automatically generated sitemap now use kidswear terminology.
+
+**People viewing:** active product tabs send a heartbeat every 30 seconds; visits expire after 90 seconds. Multiple tabs from the same session count once. Closing/hiding a tab removes its presence when possible. The current shopper is included, and the demo UI says “viewing this preview.” This is a count of browser sessions, not verified identities.
+
+**Last order:** a dismissible homepage notice reads the latest non-sandbox paid, non-cancelled order from the last seven days whose product is still published. It exposes only the product title/image/link and timestamp; no customer names, addresses or tracking links. With no eligible order, it stays hidden. Sandbox checkouts never produce this notice.
+
+A separate Administration → Settings → Services toggle controls activity widgets. Both widgets are disabled on ephemeral Netlify/Lambda storage, because separate temporary SQLite files cannot provide an accurate shared feed. A shared persistent backend is required before enabling them there. Local persistent SQLite supports them now.
+
+Design concepts and the built-in image-generation prompt/asset manifest are in [`docs/design`](docs/design). Current reference findings are in [`docs/REFERENCE-AUDIT.md`](docs/REFERENCE-AUDIT.md).
+
 ## Run locally
 
 Requirements: Node 22.13+ (Node 24 LTS recommended), pnpm 10.29.2, and Chrome for the configured browser tests. The project uses Node’s built-in SQLite driver; its experimental warning on some supported Node versions is expected.
@@ -23,7 +39,7 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-The delivered folder already contains a private `.env.local`, seeded `data/forme.sqlite`, and installed dependencies. Owner login is the `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in `.env.local`. Staff login is `staff@forme.local` with `SEED_STAFF_PASSWORD`. Passwords were generated randomly and stored with scrypt in the database. The seed variables do not create accounts automatically at startup.
+The delivered folder already contains a private `.env.local`, seeded `data/forme.sqlite`, and installed dependencies. Owner login is the `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in `.env.local`. Staff login is `staff@forme.local` with `SEED_STAFF_PASSWORD`. Passwords were generated randomly and stored with scrypt in the database. With `SEED_ON_BOOT=true`, an empty demo database is seeded automatically using the configured seed account values.
 
 For a fresh, separate demo installation:
 
@@ -52,7 +68,7 @@ Never commit `.env.local`, `data/`, uploads, or test traces. Recovery messages i
 
 ## Try the main flow
 
-1. Browse T-shirts, select a size filter and price sort, open a product, and use browser Back/Forward.
+1. Open Summer or Winter, choose a clothing category, filter by age size, open a product, and use browser Back/Forward.
 2. Select an available variant and add it to the bag. Reload to verify persistence.
 3. Continue to checkout, enter demo delivery information, and choose a test payment result. `HELLO10` applies 10% off orders from Rs. 2,000 while valid.
 4. A successful order is clearly labeled sandbox. The confirmation has a private tracking link; never share this link publicly.

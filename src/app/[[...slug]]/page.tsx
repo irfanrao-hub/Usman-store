@@ -53,7 +53,7 @@ export async function generateMetadata({
       ? slug[0] === "pages"
         ? slug[1].replaceAll("-", " ")
         : slug[0].replaceAll("-", " ")
-      : "Everyday Clothing in Pakistan");
+      : "Kidswear in Pakistan");
   const description =
     p?.seo_description ||
     p?.description ||
@@ -64,7 +64,7 @@ export async function generateMetadata({
         title +
         " at " +
         settings().brand +
-        ". Shop relaxed everyday clothing in Pakistan."
+        ". Explore Summer and Winter clothing for kids in Pakistan."
       : brand.description);
   const privatePage = [
     "admin",
@@ -176,7 +176,12 @@ export default async function Page({ params, searchParams }: Props) {
       const base = canonicalUrl();
       return (
         <>
-          <ProductDetail product={p} collection={c} related={related} />
+          <ProductDetail
+            key={p.id}
+            product={p}
+            collection={c}
+            related={related}
+          />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{

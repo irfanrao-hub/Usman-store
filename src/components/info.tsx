@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { useStore, api } from "./store-context";
 import { ErrorMessage, Photo } from "./ui";
 import { brand } from "@/lib/brand";
+import { FaqList } from "./faq";
 import { StoreIcon } from "./store-icons";
 export function InfoPage({ slug }: { slug: string }) {
   const { settings } = useStore();
@@ -12,9 +13,9 @@ export function InfoPage({ slug }: { slug: string }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const titles: Record<string, string> = {
-    about: "An everyday point of view.",
+    about: "For their little world.",
     contact: "Let’s talk.",
-    faq: "A little clarity.",
+    faq: "Frequently asked questions",
     shipping: "On its way to you.",
     returns: "Room to reconsider.",
     privacy: "Your privacy matters.",
@@ -31,23 +32,23 @@ export function InfoPage({ slug }: { slug: string }) {
       {slug === "about" ? (
         <div className="about-layout">
           <Photo
-            src="/images/gallery-1.jpg"
-            alt="Relaxed unisex everyday clothing"
+            src="/images/kids-hero.webp"
+            alt="Children wearing Knit & Kin kidswear preview outfits"
           />
           <div className="prose">
             <h2>
-              Good pieces.
+              Little outfits.
               <br />
-              Your perspective.
+              Big adventures.
             </h2>
             <p>
-              Meet {settings.brand}: an everyday wardrobe of easy shapes,
-              expressive textures and pieces that work together.
+              Meet {settings.brand}: kidswear for their little world, with
+              Summer and Winter collections to explore as they grow.
             </p>
             <p>
-              From a favourite tee to your go-to denim, find a look that feels
-              like you. Explore the collection and follow Knit &amp; Kin for the
-              latest updates.
+              From playful T-shirts and dresses to rompers, matching sets and
+              cosy layers, find their next favourite. Follow Knit &amp; Kin for
+              the latest collection updates.
             </p>
             <Link className="button" href="/collections/new-arrivals">
               Meet the collection
@@ -60,8 +61,8 @@ export function InfoPage({ slug }: { slug: string }) {
           <div className="prose">
             <h2>Need a hand?</h2>
             <p>
-              Questions about a piece or finding your fit? Email Knit &amp; Kin
-              or find us on Instagram and Facebook.
+              Questions about an outfit or your child’s size? Email Knit &amp;
+              Kin or find us on Instagram and Facebook.
             </p>
             <p>
               <a href={`mailto:${settings.contactEmail}`}>
@@ -141,33 +142,7 @@ export function InfoPage({ slug }: { slug: string }) {
           </form>
         </div>
       ) : slug === "faq" ? (
-        <div className="prose faq">
-          {[
-            [
-              "Is this a live store?",
-              "No. This is an explicitly labeled local demonstration. Checkout never charges real money or ships products.",
-            ],
-            [
-              "How do I choose a size?",
-              "Open the size guide on each product. Demo measurements must be verified by the owner before launch.",
-            ],
-            [
-              "Where can I find my order?",
-              "Visit your account or use your private tracking link from the order confirmation.",
-            ],
-            ["What are the delivery charges?", settings.shippingPolicy],
-            ["Can I return an item?", settings.returns],
-            [
-              "How do I reset my password?",
-              "Use Forgot your password on the sign-in screen. Demo recovery links are written to the owner’s local outbox; no email is sent.",
-            ],
-          ].map(([q, a]) => (
-            <details key={q}>
-              <summary>{q}</summary>
-              <p>{a}</p>
-            </details>
-          ))}
-        </div>
+        <FaqList />
       ) : (
         <div className="prose">
           {slug === "shipping"
@@ -176,7 +151,16 @@ export function InfoPage({ slug }: { slug: string }) {
               ? settings.returns
               : slug === "privacy"
                 ? settings.privacy
-                : "Check the size guide on each product for its garment measurements. Compare them with a piece you already own. Demo measurements are illustrative and require the owner’s approval."}
+                : "Check the size guide on each product for its garment measurements. Compare them with a garment that fits your child comfortably. Demo measurements are illustrative and require the owner’s approval."}
+          {slug === "privacy" && (
+            <p>
+              Product viewing counts use a hashed session identifier and a
+              per-tab identifier. A visit stops counting after 90 seconds
+              without activity; expired entries are removed on the next activity
+              update. Recent-order notices show only a public product and order
+              time, never customer details.
+            </p>
+          )}
           <p className="notice">
             Demo content — business details and policies require owner approval
             before launch.

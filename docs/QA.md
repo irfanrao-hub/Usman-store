@@ -1,3 +1,21 @@
+# Kidswear update verification · 13 November 2026
+
+This section records the current kidswear work; the earlier report below describes the previous adult-fashion version.
+
+- Production build, TypeScript, ESLint and Prettier checks passed. All **18 browser tests passed** against the production server with a fresh disposable database.
+- 18 unit/integration tests cover commerce plus activity session deduplication/expiry/privacy and safe, idempotent demo catalogue conversion.
+- Browser acceptance covers seasonal menus, clothing filters with reload/back navigation, mobile disclosures, FAQ keyboard use, age-size selection, cart persistence, checkout, admin editing, search, canonical sitemap and real activity endpoints. The recent-order positive UI state uses a browser-only fixture; no fake sales were inserted into the store database.
+- Responsive checks cover 320, 360, 390, 600, 768, 900, 1024, 1440 and 1920px. The header stays visible while scrolling and no document overflow was found.
+- Initial browser checks found undersized carousel dots and one stale adult-variant test fixture. Dots now have 24 × 44px targets; the fixture now references the kids catalogue. Both failed scenarios passed on rerun.
+- Separate original concepts and rendered desktop/mobile section screenshots were opened with `view_image`. Comparison points include header geometry/icons, hero split and copy, purple/plum/lavender colours, circular category links, four/two-column product cards, seasonal cards and FAQ disclosure styling. The implementation faithfully follows the design with the intentional asset/disclosure/accessibility differences recorded in [DESIGN.md](DESIGN.md).
+- Browser/IAB was unavailable, so checks use actual Playwright Chrome. Temporary test databases, screenshots and browser reports are outside the checkout. The real local demo database was backed up before its upgrade; QA commerce actions ran against an isolated database.
+
+Final review images: [desktop 1536 × 1024](design/kidswear-implemented-desktop.png), [mobile 390px](design/kidswear-implemented-mobile.png), [mobile product and activity indicator](design/kidswear-implemented-product.png). No browser errors, failed responses or horizontal overflow were observed in the final clean-catalogue check. Above-the-fold copy matches the design; photo composition and preview disclosures are the documented intentional differences. No remaining unintentional visual mismatch was found in the checked views.
+
+No live publication is implied. Real product details, shared durable hosting storage, payment integration and approved merchant policies are still required before commerce launch. Netlify activity widgets deliberately stay hidden while storage is ephemeral.
+
+---
+
 # Verification and handoff · 1 November 2026
 
 The deliverable is a functioning **local sandbox**, with source in `/Users/mab/Downloads/forme-store` and production-mode preview at http://127.0.0.1:3100. It is not a deployed merchant service. The unrelated Nuance repository remains unchanged; no commit, push, publication or real payment was made.

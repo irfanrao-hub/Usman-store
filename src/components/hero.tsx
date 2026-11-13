@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -25,22 +26,22 @@ export function Hero() {
       title: settings.heroTitle,
       text: settings.heroText,
       href: "/collections/new-arrivals",
-      images: [settings.heroImage, "/images/product-1.jpg"],
-      alt: "Two ways to wear the oversized navy graphic tee",
+      images: [settings.heroImage],
+      alt: "Children wearing lavender and sage layers in the Knit & Kin kidswear preview",
     },
     {
-      title: "A new|daily uniform.",
-      text: "Easy shapes. Endless possibilities.",
-      href: "/collections/tshirts",
-      images: ["/images/gallery-2.jpg", "/images/product-3.jpg"],
-      alt: "Relaxed graphic T-shirts in everyday silhouettes",
+      title: "Hello sunshine.|Let’s play.",
+      text: "Summer styles for their everyday adventures.",
+      href: "/collections/summer",
+      images: ["/images/kids-summer.webp"],
+      alt: "Children wearing a yellow dress and sage summer co-ord",
     },
     {
-      title: "Your denim.|Your rules.",
-      text: "Find the fit that feels like you.",
-      href: "/collections/denim",
-      images: ["/images/denim-2.jpg", "/images/denim-1.jpg"],
-      alt: "Relaxed blue and khaki denim jeans",
+      title: "Little layers.|Cosy days.",
+      text: "Discover their next favourite winter outfit.",
+      href: "/collections/winter",
+      images: ["/images/kids-winter.webp"],
+      alt: "Children in a lilac sweatshirt and peach quilted winter jacket",
     },
   ];
   const current = slides[slide];
@@ -95,12 +96,23 @@ export function Hero() {
             {current.title.split("|").map((line, i) => (
               <span key={i}>
                 {i > 0 && " "}
-                {i === 1 ? <em>{line}</em> : line}
+                {line}
               </span>
             ))}
           </h1>
           <p>{current.text}</p>
-          <Cta href={current.href}>Explore the collection</Cta>
+          <Cta href={current.href}>
+            {slide === 0
+              ? "Shop new arrivals"
+              : slide === 1
+                ? "Shop summer"
+                : "Shop winter"}
+          </Cta>
+          <div className="hero-season-links">
+            <Link href="/collections/summer">Summer</Link>
+            <span aria-hidden="true">/</span>
+            <Link href="/collections/winter">Winter</Link>
+          </div>
         </div>
         <div className="slide-controls">
           <span className="slide-number">0{slide + 1} / 03</span>
@@ -186,14 +198,14 @@ export function Hero() {
                   src={src}
                   alt={i === 0 ? s.alt : ""}
                   eager={index === 0}
-                  sizes="(max-width: 600px) 50vw, 30vw"
+                  sizes="(max-width: 700px) 100vw, 56vw"
                 />
               ))}
             </div>
           ))}
         </div>
         <span className="swipe-hint">
-          <MoveHorizontal size={17} /> Swipe to find your fit
+          <MoveHorizontal size={17} /> Swipe to explore
         </span>
       </div>
     </section>

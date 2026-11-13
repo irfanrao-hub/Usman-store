@@ -5,6 +5,7 @@ import { StoreProvider } from "@/components/store-context";
 import { Shell } from "@/components/shell";
 import "./globals.css";
 import "./storefront.css";
+import "./kidswear.css";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
@@ -12,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(canonicalUrl()),
     title: {
-      default: `${s.brand} — Everyday Clothing in Pakistan`,
+      default: `${s.brand} — Kidswear in Pakistan`,
       template: `%s | ${s.brand}`,
     },
     description: brand.description,
@@ -21,14 +22,14 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: s.brand,
       type: "website",
       locale: "en_PK",
-      title: `${s.brand} — Everyday Clothing in Pakistan`,
+      title: `${s.brand} — Kidswear in Pakistan`,
       description: brand.description,
       images: [
         {
           url: "/opengraph-image",
           width: 1200,
           height: 630,
-          alt: "Knit & Kin — Wear it your way",
+          alt: "Knit & Kin — Little outfits. Big adventures.",
         },
       ],
     },

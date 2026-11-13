@@ -8,6 +8,7 @@ import { Modal, ErrorMessage } from "./ui";
 import { BagContent } from "./cart";
 import { Motion } from "./motion";
 import { brand } from "@/lib/brand";
+import { StoreNavigation } from "./store-navigation";
 import { StoreIcon } from "./store-icons";
 export function Shell({ children }: { children: ReactNode }) {
   const { settings, items, bagOpen, setBagOpen, demo, notify } = useStore();
@@ -43,18 +44,7 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           {settings.brand === brand.name ? brand.wordmark : settings.brand}
         </Link>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {settings.nav.map((n) => (
-            <Link
-              key={n.href}
-              className={path === n.href ? "active" : ""}
-              aria-current={path === n.href ? "page" : undefined}
-              href={n.href}
-            >
-              {n.label}
-            </Link>
-          ))}
-        </nav>
+        <StoreNavigation />
         <div className="header-actions">
           <button
             className="icon-button"
@@ -91,7 +81,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <Link className="wordmark" href="/">
               {settings.brand === brand.name ? brand.wordmark : settings.brand}
             </Link>
-            <p>Everyday pieces. A little more you.</p>
+            <p>Little outfits. Big adventures.</p>
             <a href={`mailto:${settings.contactEmail}`}>
               {settings.contactEmail}
             </a>
@@ -121,7 +111,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 {n.label}
               </Link>
             ))}
-            <Link href="/collections">All collections</Link>
+            <Link href="/collections">All categories</Link>
           </div>
           <div>
             <h3>Need a hand?</h3>
@@ -133,7 +123,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
           <div>
             <h3>Stay in the loop</h3>
-            <p>New arrivals, fresh perspectives.</p>
+            <p>Little looks. Fresh arrivals.</p>
             <form
               className="email-form"
               onSubmit={async (e) => {
@@ -187,18 +177,7 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
       </footer>
       <Modal open={menu} onClose={() => setMenu(false)} title="Explore" drawer>
-        <nav className="mobile-links">
-          {settings.nav.map((n) => (
-            <Link key={n.href} href={n.href} onClick={() => setMenu(false)}>
-              {n.label}
-              <ArrowUpRight />
-            </Link>
-          ))}
-          <Link href="/account" onClick={() => setMenu(false)}>
-            My account
-            <ArrowUpRight />
-          </Link>
-        </nav>
+        <StoreNavigation mobile onNavigate={() => setMenu(false)} />
       </Modal>
       <Modal
         open={search}
@@ -219,7 +198,7 @@ export function Shell({ children }: { children: ReactNode }) {
               id="search-q"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Try “washed”, “denim”, “shirt”…"
+              placeholder="Try “romper”, “dress”, “hoodie”…"
               required
               autoComplete="off"
             />

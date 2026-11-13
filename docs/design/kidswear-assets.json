@@ -1,0 +1,71 @@
+{
+  "method": "Built-in image_gen",
+  "assets": [
+    {
+      "name": "kids-hero",
+      "prompt": "Premium photorealistic studio campaign photograph for Pakistani children's clothing store Knit & Kin. South Asian girl aged6 wearing plain lavender crewneck sweatshirt and relaxed blue jeans, South Asian boy aged5 in sage green plain hoodie and blue jeans, both wearing white sneakers, joyful candid laughing together sitting on low pastel blocks. Full bodies and feet in frame, generous margin around them, clean blush pink studio backdrop, soft daylight, realistic fabrics, naturally proportioned children. Landscape 4:3 framing, close enough that their happy faces read. No text, logos, labels, graphics or watermarks. Fully clothed wholesome catalogue image.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-a0e24df6-c882-437c-9dc9-aab1ace5da4e.png",
+      "output": "public/images/kids-hero.webp"
+    },
+    {
+      "name": "summer",
+      "prompt": "Premium photorealistic children's summer fashion campaign, Pakistani girl aged6 wearing a pale yellow short-sleeved knee length daisy-print dress and white sneakers, boy aged5 in sage short-sleeve shirt and matching shorts, standing playfully side by side in light sky blue studio with subtle sunshine and a single pastel yellow ball. Both fully clothed, full body head to shoes, natural South Asian faces, clean backdrop. Wide landscape4:3, excellent true clothing textures, no text logos watermarks.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-603c34aa-0023-4662-bc37-5f21009bf258.png",
+      "output": "public/images/kids-summer.webp"
+    },
+    {
+      "name": "winter",
+      "prompt": "Premium photorealistic kids winter fashion campaign: Pakistani girl aged6 in lilac crewneck sweatshirt and blue jeans, boy aged5 in rust peach quilted jacket and dark trousers, standing playfully near low mint studio blocks on very pale lavender background, both fully clothed, full bodies head to white sneakers. Natural happy expressions. Landscape4:3 magazine quality true cloth textures soft daylight. No text logos watermark.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-5d65574b-d50f-4f27-941c-b7a061b495cc.png",
+      "output": "public/images/kids-winter.webp"
+    },
+    {
+      "name": "sunshine-tee",
+      "prompt": "Product catalogue flat lay of a single children's pale butter yellow short sleeve cotton crewneck T-shirt size4years with one small cute embroidered golden sunshine on chest. Symmetrical full garment front, centered occupies70percent, pale peach seamless background, excellent cotton fabric texture, soft studio shadows. Premium online kidswear product photograph. Portrait4:5, no person no hanger no accessories no text no logo no watermark.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-aaf5dd6e-2497-45c8-9b6b-89a3bdfbb63d.png",
+      "output": "public/images/kids-sunshine-tee.webp"
+    },
+    {
+      "name": "meadow-set",
+      "prompt": "Product catalogue flat lay of a children's two piece sage green summer co-ord: short sleeved button down shirt with camp collar above matching elastic waist shorts, neatly arranged full pieces without overlap, centered on very pale mint background. Kids size4years, plain unbranded, small coconut buttons, excellent cotton fabric texture and gentle shadow. Portrait4:5 premium studio product photograph. No person hanger text logos watermark.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-ce8985c2-038f-45f5-b127-9ce98ea7ce6e.png",
+      "output": "public/images/kids-meadow-set.webp"
+    },
+    {
+      "name": "daisy-dress",
+      "prompt": "Product catalogue photograph flat lay of a children's pale yellow short sleeve knee length dress with tiny white daisy floral print, softly gathered waist and round neck, size4years, centered complete garment occupies75percent on very pale butter yellow background, beautiful genuine fabric texture and natural shadow. Portrait4:5 premium kidswear product photograph. No person no hanger accessories text logo watermark.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-3be11a60-1a98-4c19-afd2-e5da5050eae0.png",
+      "output": "public/images/kids-daisy-dress.webp"
+    },
+    {
+      "name": "cloud-romper",
+      "prompt": "Product catalogue photograph flat lay of a single baby pale sky blue short-sleeved romper bodysuit with tiny white cloud pattern and snap fasteners at bottom, size6months. Entire garment centered on very pale blue seamless background, soft cotton fabric detail with light studio shadow. Premium ecommerce image portrait4:5. No person no hanger accessories text logo watermark.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-a3c00132-1e28-4d1f-8ccb-23f822f20b7f.png",
+      "output": "public/images/kids-cloud-romper.webp"
+    },
+    {
+      "name": "lilac-sweatshirt",
+      "prompt": "Product catalogue photograph flat lay of a children's plain lilac purple long sleeved crewneck sweatshirt, ribbed cuffs hem neckline, size4years, entirely centered front view on pale lavender seamless background. Soft fleece texture, gently folded sleeves but no wrinkles, garment occupies75percent, studio soft shadows, premium ecommerce portrait4:5. No person hanger text logo watermark.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-b05d36d8-523a-4590-99ed-1968d752ad58.png",
+      "output": "public/images/kids-lilac-sweatshirt.webp"
+    },
+    {
+      "name": "sage-hoodie",
+      "prompt": "Product catalogue photograph flat lay of a children's plain sage green pullover hoodie with kangaroo pocket, NO drawstrings, ribbed cuffs and hem, size4years. Centered full garment front view on very pale mint seamless background, soft fleece fabric detail and soft shadows. Portrait4:5 premium kidswear ecommerce. No person hanger accessories text logo watermark.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-2929166c-32ee-4bed-a7bc-dc948336cba6.png",
+      "output": "public/images/kids-sage-hoodie.webp"
+    },
+    {
+      "name": "peach-jacket",
+      "prompt": "Product catalogue photograph flat lay of a children's rust peach quilted jacket with round collar and cream zipper, two front patch pockets, subtle quilt squares, size4years. Whole jacket centered full view on very pale peach background, detailed cloth, softstudio shadows. Portrait4:5 premium kidswear ecommerce. No person hanger accessories text logo watermark.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-fdbd262b-b8d8-4674-8be4-0fcf7d736504.png",
+      "output": "public/images/kids-peach-jacket.webp"
+    },
+    {
+      "name": "cosy-set",
+      "prompt": "Product catalogue photograph flat lay of a children's oatmeal cream two piece winter co-ord: plain long sleeved crewneck sweatshirt and matching elastic waist joggers, neatly arranged full pieces without overlap. Kids size4years, no drawstrings, soft ribbing and fleece fabric detail, subtle shadow on warm pale neutral seamless background. Portrait4:5 premium studio product photograph. No person hanger text logos watermark.",
+      "source": "/Users/mab/.codex/generated_images/01a1d073-424e-7b12-9a26-3735efa3c8cd/exec-baa5695d-2e14-48d1-bff0-bd0b88ff0ee5.png",
+      "output": "public/images/kids-cosy-set.webp"
+    }
+  ]
+}

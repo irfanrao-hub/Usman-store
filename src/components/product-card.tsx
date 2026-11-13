@@ -131,6 +131,16 @@ export function ProductCard({
 }
 export function swatch(color = "") {
   const v = color.toLowerCase();
+  const kidsColors: Record<string, string> = {
+    "butter yellow": "#f3d77c",
+    "daisy yellow": "#f5dd8e",
+    "sage green": "#9eaf8c",
+    "sky blue": "#b3d8ef",
+    lilac: "#b7a2d5",
+    peach: "#d68d73",
+    oatmeal: "#dfcdb4",
+  };
+  if (kidsColors[v]) return kidsColors[v];
   return v.includes("olive")
     ? "#777a61"
     : v.includes("blue")

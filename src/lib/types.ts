@@ -51,8 +51,9 @@ export type Settings = {
   nav: { label: string; href: string }[];
   homeTabs: string[];
   homeOrder: ("arrivals" | "editorial")[];
-  themeInk: "#111111" | "#243025" | "#202b3c";
+  themeInk: "#111111" | "#243025" | "#202b3c" | "#59305d";
   notifications: boolean;
+  activityWidgets: boolean;
 };
 export type CartItem = { variantId: string; quantity: number };
 export type Line = {

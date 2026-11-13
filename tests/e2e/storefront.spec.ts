@@ -34,7 +34,7 @@ test("Knit & Kin branding, public links and canonical sitemap", async ({
   const sitemap = await request.get("/sitemap.xml");
   expect(sitemap.status()).toBe(200);
   expect(await sitemap.text()).toContain(
-    "https://knitandkin.com/products/washed-print-knit-tee",
+    "https://knitandkin.com/products/sunshine-graphic-tee",
   );
   expect(await sitemap.text()).not.toMatch(/\/(admin|account|checkout|cart)</);
   const robots = await request.get("/robots.txt");
@@ -72,11 +72,16 @@ test("header remains visible and reachable at every responsive width", async ({
   await page.getByRole("button", { name: "Open navigation" }).click();
   await page
     .getByRole("dialog", { name: "Explore", exact: true })
-    .getByRole("link", { name: "Denim", exact: true })
+    .locator("summary")
+    .filter({ hasText: "Winter" })
     .click();
-  await expect(page).toHaveURL(/\/collections\/denim$/);
+  await page
+    .getByRole("dialog", { name: "Explore", exact: true })
+    .getByRole("link", { name: "Shop all winter", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/collections\/winter$/);
   await expect(
-    page.getByRole("heading", { name: "Denim", exact: true }),
+    page.getByRole("heading", { name: "Winter", exact: true }),
   ).toBeVisible();
 });
 
@@ -91,21 +96,21 @@ test("homepage quick add, stock limits, persistence and removal", async ({
   );
   await page
     .getByRole("button", {
-      name: "Add Washed Print Knit Tee to cart — choose size",
+      name: "Add Sunshine Graphic Tee to cart — choose size",
       exact: true,
     })
     .click();
   const quick = page.getByRole("dialog", {
-    name: "Washed Print Knit Tee",
+    name: "Sunshine Graphic Tee",
     exact: true,
   });
   await expect(
     quick.getByRole("button", { name: "Add to cart", exact: true }),
   ).toBeDisabled();
   await expect(
-    quick.getByRole("button", { name: "XL", exact: true }),
+    quick.getByRole("button", { name: "7–8 Y", exact: true }),
   ).toBeDisabled();
-  await quick.getByRole("button", { name: "M", exact: true }).click();
+  await quick.getByRole("button", { name: "3–4 Y", exact: true }).click();
   await quick.getByRole("button", { name: "Add to cart", exact: true }).click();
   let cart = page.getByRole("dialog", { name: "Your cart (1)", exact: true });
   await expect(cart).toBeVisible();
@@ -120,9 +125,9 @@ test("homepage quick add, stock limits, persistence and removal", async ({
   await page.getByRole("button", { name: "Shopping cart, 2 items" }).click();
   await expect(
     page.getByRole("dialog", { name: "Your cart (2)" }),
-  ).toContainText("Rs. 3,798");
+  ).toContainText("Rs. 2,900");
   await page
-    .getByRole("button", { name: "Remove Washed Print Knit Tee" })
+    .getByRole("button", { name: "Remove Sunshine Graphic Tee" })
     .click();
   await expect(
     page.getByRole("dialog", { name: "Your cart (0)" }),
@@ -136,18 +141,22 @@ test("carousel arrow, keyboard, drag and reduced motion controls", async ({
   await page.goto("/");
   await expect(page.getByRole("button", { name: /slideshow/ })).toHaveCount(0);
   await page.getByRole("button", { name: "Next collection" }).click();
-  await expect(page.locator("h1")).toHaveText("A new daily uniform.");
+  await expect(page.locator("h1")).toHaveText("Hello sunshine. Let’s play.");
   await page.getByRole("button", { name: "Previous collection" }).click();
-  await expect(page.locator("h1")).toHaveText("Wear it your way.");
+  await expect(page.locator("h1")).toHaveText(
+    "Little outfits. Big adventures.",
+  );
   await page.locator(".hero-photo").focus();
   await page.keyboard.press("ArrowLeft");
-  await expect(page.locator("h1")).toHaveText("Your denim. Your rules.");
+  await expect(page.locator("h1")).toHaveText("Little layers. Cosy days.");
   const box = (await page.locator(".hero-photo").boundingBox())!;
   await page.mouse.move(box.x + box.width * 0.7, box.y + 100);
   await page.mouse.down();
   await page.mouse.move(box.x + box.width * 0.3, box.y + 100, { steps: 8 });
   await page.mouse.up();
-  await expect(page.locator("h1")).toHaveText("Wear it your way.");
+  await expect(page.locator("h1")).toHaveText(
+    "Little outfits. Big adventures.",
+  );
   expect(
     await page
       .locator(".hero-track")
@@ -171,9 +180,9 @@ test("search returns relevant products and mobile cart is accessible", async ({
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
   await page.getByRole("button", { name: "Search", exact: true }).click();
-  await page.getByLabel("Search products", { exact: true }).fill("denim");
+  await page.getByLabel("Search products", { exact: true }).fill("romper");
   await page.getByRole("button", { name: "Submit search" }).click();
-  await expect(page).toHaveURL(/search\?q=denim/);
+  await expect(page).toHaveURL(/search\?q=romper/);
   await expect(page.locator(".product-card").first()).toBeVisible();
   await page.getByRole("button", { name: "Shopping cart, 0 items" }).click();
   const axe = await new AxeBuilder({ page })

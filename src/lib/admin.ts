@@ -257,7 +257,9 @@ export const settingsSchema = z.object({
     .array(
       z.object({
         label: z.string().min(1).max(30),
-        href: z.string().regex(/^\/(collections|pages)\/[a-z0-9-]+$/),
+        href: z
+          .string()
+          .regex(/^\/(collections(?:\/[a-z0-9-]+)?|pages\/[a-z0-9-]+)$/),
       }),
     )
     .max(6),
@@ -267,6 +269,9 @@ export const settingsSchema = z.object({
     .max(2)
     .refine((v) => new Set(v).size === v.length)
     .default(["arrivals", "editorial"]),
-  themeInk: z.enum(["#111111", "#243025", "#202b3c"]).default("#111111"),
+  themeInk: z
+    .enum(["#111111", "#243025", "#202b3c", "#59305d"])
+    .default("#111111"),
   notifications: z.boolean(),
+  activityWidgets: z.boolean().default(true),
 });

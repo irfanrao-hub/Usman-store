@@ -1,3 +1,21 @@
+# Kidswear reference review · 13 November 2026
+
+Each supplied reference was inspected separately. Text inspection used the web tool; visual review used Playwright with installed Chrome at 1440 × 1000 because the built-in IAB was unavailable. The Hopscotch website rejected the text-fetch tool but loaded normally in Chrome. No reference forms or orders were submitted, and no customer data was collected.
+
+| Reference | Observed detail | Applied to Knit & Kin |
+|---|---|---|
+| [Cuddle & Cradle](https://cuddle-cradle.com/) | Product page has an inline “people are viewing this right now” indicator beside product options. | Database-backed, expiring session counts on product pages. The user's requested last-order pattern is a separate recent-purchase notice; its exact behaviour on the reference was not verified. No numbers, reviews or sales claims were copied. |
+| [Tods n Teens](https://www.todsnteens.com/) | Clothing navigation distinguishes Tropical, Winter, Summer and Eastern clothing; homepage has “Shop All Categories.” | Exactly Summer and Winter, as requested, with clothing types beneath each; six visual clothing categories on the homepage. |
+| [Little & Loom](https://littlenloom.com/) | Homepage includes a clearly labelled Frequently Asked Questions section with shopping and collection questions. | Accessible expandable questions, original kidswear copy and the owner's own delivery/return settings. |
+| [Babyplanet](https://babyplanet.pk/) | White storefront, strong purple navigation/actions (computed `rgb(166,72,156)`), colourful kids imagery, clear category browsing and Add to cart. | Purple/plum design with white, lavender, mint and peach surfaces; visible cart controls and original kidswear sample photography. |
+| [Hopscotch](https://ilovehopscotch.com/) | Spacious white header, fine search/account/cart icons, age-oriented kids navigation, large editorial campaign images. | Clean sticky header, the user's outline icon treatment and a swipeable kidswear campaign hero. Sale graphics and competitor promotions were not copied. |
+
+The user explicitly chose to convert the store to kidswear. The supplied contact details and Knit & Kin identity remain central. Since verified kids inventory and photos were not supplied, eight sample products use newly generated images and clearly marked demo prices/sizes. SEO metadata and sitemap include the resulting kidswear collections; demo indexing remains disabled.
+
+The older Hanger review below is retained as historical context. Its adult catalogue and monochrome design were superseded by the kidswear update.
+
+---
+
 # Reference audit · 1 November 2026
 
 The audit used headless Google Chrome through Playwright because the Browser plugin was not installed. Public pages only; no forms were submitted and no orders were placed. No access to Hanger’s private backend or admin is claimed.
