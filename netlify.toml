@@ -6,16 +6,16 @@
   PNPM_VERSION = "10.29.2"
   DEMO_MODE = "true"
   SEED_ON_BOOT = "true"
-  SITE_URL = "https://oonline-store.netlify.app"
   CANONICAL_SITE_URL = "https://knitandkin.com"
   DATABASE_PATH = "/tmp/forme.sqlite"
-  SESSION_SECRET = "Ag6sJZ4RZd5bQEZZ3yPcE3C6IijnzQCiAvRfGlwrwA5H2LHFidnobv59iUC7ATRX"
 
 [context.production.environment]
   NODE_VERSION = "22.21.1"
   DEMO_MODE = "true"
   SEED_ON_BOOT = "true"
-  SITE_URL = "https://oonline-store.netlify.app"
   CANONICAL_SITE_URL = "https://knitandkin.com"
   DATABASE_PATH = "/tmp/forme.sqlite"
-  SESSION_SECRET = "Ag6sJZ4RZd5bQEZZ3yPcE3C6IijnzQCiAvRfGlwrwA5H2LHFidnobv59iUC7ATRX"
+
+# SITE_URL defaults to Netlify URL; override it in the Netlify UI only after
+# connecting the custom domain. Keep SMTP_PASS and SESSION_SECRET in private
+# Netlify environment variables, never in this committed file.

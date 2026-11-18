@@ -15,6 +15,9 @@ CREATE TABLE IF NOT EXISTS redirects(old_path TEXT PRIMARY KEY,new_path TEXT NOT
 CREATE TABLE IF NOT EXISTS rate_limits(key TEXT PRIMARY KEY,count INTEGER NOT NULL,reset_at INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS recovery_tokens(hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),expires_at INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS outbox(id TEXT PRIMARY KEY,recipient TEXT NOT NULL,subject TEXT NOT NULL,body TEXT NOT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS email_deliveries(outbox_id TEXT PRIMARY KEY REFERENCES outbox(id) ON DELETE CASCADE,order_id TEXT UNIQUE REFERENCES orders(id),kind TEXT NOT NULL CHECK(kind IN ('order','test')),html TEXT NOT NULL DEFAULT '',status TEXT NOT NULL DEFAULT 'queued' CHECK(status IN ('queued','sending','sent','failed','uncertain')),attempts INTEGER NOT NULL DEFAULT 0,last_error TEXT,sent_at TEXT,updated_at INTEGER NOT NULL DEFAULT 0);
+-- Preserve old demo confirmations for owner-selected retry; never send the backlog automatically.
+INSERT OR IGNORE INTO email_deliveries(outbox_id,order_id,kind) SELECT b.id,o.id,'order' FROM outbox b JOIN orders o ON b.subject='Sandbox order ' || o.id;
 CREATE TABLE IF NOT EXISTS subscribers(email TEXT PRIMARY KEY,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS messages(id TEXT PRIMARY KEY,name TEXT NOT NULL,email TEXT NOT NULL,message TEXT NOT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS product_presence(product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,session_hash TEXT NOT NULL,tab_id TEXT NOT NULL,last_seen INTEGER NOT NULL,PRIMARY KEY(product_id,session_hash,tab_id));

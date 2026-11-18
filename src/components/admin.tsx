@@ -32,6 +32,7 @@ import {
   type Settings,
   type PublicUser,
   type Order,
+  type EmailStatus,
   money,
 } from "@/lib/types";
 type Discount = {
@@ -59,12 +60,24 @@ type AdminData = {
     detail: string;
     created_at: string;
   }[];
+  email?: {
+    configured: boolean;
+    mode: string;
+    from: string;
+    siteUrl: string;
+    issue: string;
+  };
   outbox: {
     id: string;
     recipient: string;
     subject: string;
     body: string;
     created_at: string;
+    kind: "order" | "test" | null;
+    status: EmailStatus | "local_only";
+    attempts: number;
+    last_error: string | null;
+    sent_at: string | null;
   }[];
   messages: { id: string; name: string; email: string; message: string }[];
   demo: boolean;
@@ -125,6 +138,29 @@ export function Admin() {
     } catch (e) {
       setError((e as Error).message);
       return false;
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function emailAction(id?: string) {
+    setBusy(true);
+    setError("");
+    try {
+      const result = await api<{ status: EmailStatus }>(
+        id ? "admin/email/retry" : "admin/email/test",
+        id ? { id } : {},
+      );
+      await load();
+      if (result.status === "sent")
+        notify(
+          "Email accepted by the mail provider. Check the inbox and spam folder.",
+        );
+      else
+        setError(
+          "Email was not confirmed as sent. Review its status in the outbox below.",
+        );
+    } catch (e) {
+      setError((e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -628,10 +664,44 @@ export function Admin() {
                     <div>
                       <h1>Inbox &amp; outbox</h1>
                       <p className="muted">
-                        Local demo messages. No email has been sent.
+                        Customer messages and confirmation email status.
                       </p>
                     </div>
                   </div>
+                  <section className="admin-panel message-panel">
+                    <h2>Email connection</h2>
+                    <p>
+                      {data.email?.configured
+                        ? "SMTP configured — send a test to verify the connection."
+                        : data.email?.issue}
+                    </p>
+                    <p className="break-all">
+                      From: {data.email?.from}
+                      <br />
+                      Order links: {data.email?.siteUrl}
+                    </p>
+                    {!data.email?.configured && (
+                      <p className="muted">
+                        For Gmail, set EMAIL_MODE=smtp,
+                        SMTP_HOST=smtp.gmail.com, SMTP_PORT=465, SMTP_USER and
+                        EMAIL_FROM to your Gmail address, and SMTP_PASS to a
+                        Google App Password in the server environment. Keep the
+                        password out of source code and chat.
+                      </p>
+                    )}
+                    <button
+                      className="button"
+                      disabled={busy || !data.email?.configured}
+                      onClick={() => emailAction()}
+                    >
+                      {busy ? "Please wait…" : "Send connection test"}
+                    </button>
+                    <p className="muted">
+                      Sends to {data.settings.contactEmail}. “Sent” means
+                      accepted by the mail provider; inbox delivery can still be
+                      delayed or filtered.
+                    </p>
+                  </section>
                   <h2>Customer messages</h2>
                   {data.messages.length ? (
                     data.messages.map((m) => (
@@ -645,14 +715,42 @@ export function Admin() {
                   ) : (
                     <p className="empty">No messages yet.</p>
                   )}
-                  <h2>Demo email outbox</h2>
+                  <h2>Email outbox</h2>
                   {data.outbox.map((m) => (
                     <article className="admin-panel message-panel" key={m.id}>
                       <h3>{m.subject}</h3>
                       <p className="muted">
                         To: {m.recipient} · {m.created_at} UTC
                       </p>
+                      <p>
+                        <strong>Status: {m.status.replaceAll("_", " ")}</strong>
+                        {m.attempts ? ` · ${m.attempts} attempt(s)` : ""}
+                        {m.sent_at ? ` · ${m.sent_at} UTC` : ""}
+                      </p>
+                      {m.last_error && <p className="notice">{m.last_error}</p>}
                       <p className="break-all">{m.body}</p>
+                      {m.kind &&
+                        ["queued", "failed", "uncertain"].includes(
+                          m.status,
+                        ) && (
+                          <button
+                            className="button"
+                            disabled={busy || !data.email?.configured}
+                            onClick={() => {
+                              if (m.status === "uncertain")
+                                setConfirm({
+                                  title:
+                                    "The previous send could not be confirmed. Retrying may send a duplicate email. Retry this message?",
+                                  action: () => emailAction(m.id),
+                                });
+                              else void emailAction(m.id);
+                            }}
+                          >
+                            {m.status === "uncertain"
+                              ? "Retry (may duplicate)"
+                              : "Send / retry email"}
+                          </button>
+                        )}
                     </article>
                   ))}
                 </>
@@ -1704,7 +1802,7 @@ function SettingsEditor({
                 checked={value.notifications}
                 onChange={(e) => change("notifications", e.target.checked)}
               />
-              Save demo order emails to outbox
+              Send order confirmation emails (requires SMTP configuration)
             </label>
             <label className="checkbox-label">
               <input

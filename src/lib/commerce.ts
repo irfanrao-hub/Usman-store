@@ -1,7 +1,8 @@
-import { randomBytes, randomUUID } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { db, settings, isDemo, transaction, audit, orders } from "./db";
-import { hash, HttpError, siteUrl } from "./security";
+import { hash, HttpError } from "./security";
+import { queueOrderEmail, orderEmailStatus } from "./email";
 import type { CartItem, Quote, Line, Order } from "./types";
 export const cartSchema = z
   .array(
@@ -226,17 +227,7 @@ export function createOrder(
       order = orders().find((o) => o.id === id)!;
     }
     audit(userId || sid, "order.created", id, { payment, sandbox: true });
-    if (settings().notifications)
-      db()
-        .prepare(
-          "INSERT INTO outbox(id,recipient,subject,body) VALUES(?,?,?,?)",
-        )
-        .run(
-          randomUUID(),
-          data.customer.email,
-          `Sandbox order ${id}`,
-          `No real payment was taken. Track locally: ${siteUrl()}/orders/${id}?token=${token}`,
-        );
+    if (settings().notifications) queueOrderEmail(order, token);
     return { order, trackingToken: token, replayed: false };
   });
 }
@@ -309,5 +300,6 @@ export function publicOrder(o: Order) {
     sandbox,
     reserved_until,
     created_at,
+    email_status: orderEmailStatus(id),
   };
 }

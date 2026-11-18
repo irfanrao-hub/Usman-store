@@ -155,6 +155,16 @@ export function OrderPage({ id }: { id: string }) {
             </dd>
             <dt>Email</dt>
             <dd>{order.customer.email}</dd>
+            <dt>Confirmation email</dt>
+            <dd role="status">
+              {order.email_status === "sent"
+                ? "Confirmation email sent. Please check your inbox and spam folder."
+                : order.email_status === "sending"
+                  ? "Sending your confirmation email…"
+                  : order.email_status === "uncertain"
+                    ? "Email sending could not be confirmed. Keep your private tracking link."
+                    : "Your confirmation email has not been sent. Keep your private tracking link to view this order."}
+            </dd>
           </dl>
           {order.reserved_until && pending && (
             <p className="notice">

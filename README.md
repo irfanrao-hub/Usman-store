@@ -11,6 +11,8 @@ Start the local preview with `pnpm dev`, or use `pnpm build` and `pnpm start` fo
 
 Brand name, email and social links are centralized in `src/lib/brand.ts`. `CANONICAL_SITE_URL=https://knitandkin.com` controls SEO URLs; `SITE_URL` must match the actual application origin for request validation. Change `SITE_URL` when the custom domain is connected. Do not replace the Netlify origin before the domain is serving the app.
 
+Order confirmations now support SMTP delivery, visible send status and owner-selected retries. Gmail credentials and domain DNS still require account setup; see [email and domain setup](docs/EMAIL-AND-DOMAIN.md).
+
 The sitemap includes published products, collections and information pages. Metadata includes page titles, descriptions, canonical URLs, Open Graph/Twitter previews and structured store/product/breadcrumb data. Demo mode keeps `noindex` and disallows crawling. Turn off both `DEMO_MODE` and `SEED_ON_BOOT` only after real catalog, durable database, payment integration and policies are ready; submit the canonical sitemap to Search Console after connecting the domain. Rankings are not guaranteed.
 
 On machines with little free disk space, run `DISABLE_WEBPACK_CACHE=true pnpm dev` (also supported for builds) and `pnpm test:e2e --trace=off`. Browser QA outputs are kept under `/tmp`, outside the source checkout.
@@ -64,7 +66,7 @@ For a fresh, separate demo installation:
 | `SEED_STAFF_PASSWORD` | Optional staff password for the one-time seed. |
 | `TEST_BASE_URL` | Optional browser test origin. Defaults to port 3100. Must match `SITE_URL` when testing mutations. |
 
-Never commit `.env.local`, `data/`, uploads, or test traces. Recovery messages in the local outbox contain private reset/tracking links. The owner can view them in Administration → Inbox & outbox. For a locked-out local owner, inspect the `outbox` table using an authorized local SQLite client; no email has been sent.
+Never commit `.env.local`, `data/`, uploads, or test traces. Recovery messages in the local outbox contain private reset/tracking links. The owner can view them in Administration → Inbox & outbox. For a locked-out local owner, inspect the `outbox` table using an authorized local SQLite client. Password recovery remains local-only; order confirmations can be delivered through configured SMTP.
 
 ## Try the main flow
 
@@ -105,6 +107,6 @@ Browser tests create labeled QA records and sandbox orders in the configured loc
 
 No deployment was performed. The app can run on a Node host with persistent writable storage; do not deploy the SQLite/media directories onto an ephemeral serverless filesystem. Use a reverse proxy with TLS, set the exact HTTPS `SITE_URL`, inject a new private session secret, and keep the database/media outside publicly served files. Make `.env.local` readable only by the app owner. Run migrations separately and create real owner accounts through an approved account-provisioning procedure; do not seed demonstration products into production.
 
-Before accepting real commerce, the owner must provide the final brand and domain, authorized production product content, verified measurements/composition, support contact, shipping regions/rates, courier choice, approved returns/privacy/tax policy and payment-provider account. Live checkout, verified provider webhooks, real refunds, courier fulfilment and outbound email remain unconfigured. No provider availability or tax treatment is assumed. A live payment adapter must verify signed webhooks, deduplicate provider event IDs, enforce atomic stock/idempotency rules, and keep payment status independent of redirects and fulfilment. Do not simply change the sandbox UI label.
+Before accepting real commerce, the owner must provide the final brand and domain, authorized production product content, verified measurements/composition, support contact, shipping regions/rates, courier choice, approved returns/privacy/tax policy and payment-provider account. Live checkout, verified provider webhooks, real refunds and courier fulfilment remain unconfigured. SMTP order email is implemented but requires private credentials and a successful connection test. No provider availability or tax treatment is assumed. A live payment adapter must verify signed webhooks, deduplicate provider event IDs, enforce atomic stock/idempotency rules, and keep payment status independent of redirects and fulfilment. Do not simply change the sandbox UI label.
 
 For multiple app instances, migrate SQLite to a shared relational database with equivalent transactions and use object storage for media. Add operational monitoring, backups, a provider-specific integration/security review, accessibility assistive-technology testing and real-user performance measurement before launch.

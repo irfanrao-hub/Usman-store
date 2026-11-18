@@ -46,6 +46,13 @@ import {
   latestPublicPurchase,
   recordProductView,
 } from "@/lib/activity";
+import {
+  emailConfiguration,
+  emailOutbox,
+  orderEmailId,
+  deliverEmail,
+  queueTestEmail,
+} from "@/lib/email";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const json = (data: unknown, status = 200) =>
@@ -174,11 +181,8 @@ async function handler(
                 audit: db()
                   .prepare("SELECT * FROM audit ORDER BY id DESC LIMIT 100")
                   .all(),
-                outbox: db()
-                  .prepare(
-                    "SELECT * FROM outbox ORDER BY created_at DESC LIMIT 50",
-                  )
-                  .all(),
+                outbox: emailOutbox(),
+                email: emailConfiguration(),
                 messages: db()
                   .prepare(
                     "SELECT * FROM messages ORDER BY created_at DESC LIMIT 50",
@@ -363,6 +367,15 @@ async function handler(
       rateLimit("checkout:" + s.sid, 25);
       const u = await identity();
       const result = createOrder(checkoutSchema.parse(body), s.sid, u?.id);
+      const emailId = orderEmailId(result.order.id);
+      if (emailId && settings().notifications) {
+        // Email failures must not turn a committed checkout into a failed order.
+        await deliverEmail(emailId).catch(() => {
+          console.error(
+            "Order email receipt could not be saved. Review the admin outbox.",
+          );
+        });
+      }
       return json(
         { ...result, order: publicOrder(result.order) },
         result.replayed ? 200 : 201,
@@ -469,6 +482,20 @@ async function handler(
         .parse(body);
       expireReservations();
       return json(publicOrder(updateOrder(v.id, v.action, u.id)));
+    }
+    if (key === "admin/email/test" || key === "admin/email/retry") {
+      if (method !== "POST")
+        throw new HttpError(405, "Use POST for email actions.");
+      const u = await requireAdmin(true);
+      rateLimit("email-action:" + u.id, 10);
+      const config = emailConfiguration();
+      if (!config.configured) throw new HttpError(503, config.issue);
+      const id = key.endsWith("/test")
+        ? transaction(queueTestEmail)
+        : z.object({ id: z.string().uuid() }).parse(body).id;
+      const status = await deliverEmail(id, true);
+      audit(u.id, "email.attempted", id, { status });
+      return json({ status });
     }
     throw new HttpError(404, "Not found.");
   } catch (error) {

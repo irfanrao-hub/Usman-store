@@ -25,7 +25,8 @@ Status distinguishes a functioning local implementation from a live external ser
 | Accessibility | Tested subset | Automated axe checks, keyboard dialogs/focus restoration, reduced motion, mobile layout. Not a claim of complete WCAG conformance or assistive-technology certification. |
 | Performance | Measured lab subset | See QA report and raw lab measurements. No field data or ranking guarantee. |
 | Live payment processing / verified payment webhooks | Blocked by unconfigured integration | Provider/account/business decisions required. Live checkout explicitly refuses orders. No unverified webhook can mark orders paid. |
-| Actual courier integration, outbound email, taxes | Unavailable | Owner/provider choices and reviewed business rules required. No invented integrations or tax assumptions. |
+| Order confirmation email | SMTP implementation ready; credentials required | Branded confirmations, persisted sending status, owner connection test and individual retries. Gmail App Password or another SMTP account required. |
+| Actual courier integration, taxes | Unavailable | Owner/provider choices and reviewed business rules required. No invented integrations or tax assumptions. |
 | Production hosting / backups / monitoring | Not deployed | Deployment and maintenance instructions provided. No commit, push or publication. |
 | Multi-instance database/object storage | Incomplete for scale-out | Current runtime is a single Node deployment with persistent SQLite/media storage. Migrate before horizontally scaling. |
 
