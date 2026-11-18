@@ -30,7 +30,7 @@ The audit used headless Google Chrome through Playwright because the Browser plu
 - https://thehangerpakistan.com/pages/exchange-return-policy — desktop.
 - https://thehangerpakistan.com/collections/jeans and https://thehangerpakistan.com/collections/shirts — public imagery inspection.
 
-Raw evidence: [page data](reference-audit.json), [interaction data](reference-interactions.json). Screenshots use the `reference-` prefix in this folder. [Homepage desktop](reference-0-1440.png), [homepage mobile](reference-0-390.png), [collection](reference-1-1440.png), [product](reference-2-1440.png), [cart](reference-3-1440.png), [returns](reference-4-1440.png).
+Raw evidence: page data (historical attachment removed), interaction data (historical attachment removed). Screenshots use the `reference-` prefix in this folder. Homepage desktop (historical attachment removed), homepage mobile (historical attachment removed), collection (historical attachment removed), product (historical attachment removed), cart (historical attachment removed), returns (historical attachment removed).
 
 ## Observed structure and measurements
 
@@ -52,3 +52,5 @@ Do not copy the reference’s inconsistent shipping thresholds (product help ver
 - [Google ecommerce guidance](https://developers.google.com/search/docs/specialty/ecommerce) and [product structured data](https://developers.google.com/search/docs/appearance/structured-data/product): canonical public URLs, explicit product offers, no invented ratings.
 - [Web Vitals](https://web.dev/articles/vitals): distinguish local lab observations from real-user metrics.
 - [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), installed Next.js 16.4.3 route/server-client/authentication guides, and [iron-session](https://github.com/vvo/iron-session): server-rendered routes, sealed sessions and server authorization.
+
+Historical screenshots and generated JSON reports were removed during workspace cleanup on 18 November 2026. Current kidswear design assets and written findings are retained.

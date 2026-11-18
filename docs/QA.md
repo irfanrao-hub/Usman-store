@@ -28,9 +28,9 @@ The deliverable is a functioning **local sandbox**, with source in `/Users/mab/D
 | ESLint | Pass | `pnpm lint` on final source |
 | Production build | Pass | `pnpm build`, Next 16.4.3 / webpack |
 | Commerce and security integration tests | 13 passed | `pnpm test`; isolated temporary SQLite database |
-| Browser suite | 9 passed, 0 skipped, 0 flaky | [Full JSON report](e2e-full-results.json); production server, installed Chrome, Playwright |
-| Final admin regression | 1 passed; [focused report](e2e-admin-regression.json) | Product/collection/image creation, mobile admin keyboard navigation and rejected-settings-save protection after the final UI fixes |
-| Browser console/network | No errors or failed requests in measured homepage journeys | [Raw lab results](lab-results.json); desktop/mobile tabs and search modal |
+| Browser suite | 9 passed, 0 skipped, 0 flaky | Full JSON report (historical attachment removed); production server, installed Chrome, Playwright |
+| Final admin regression | 1 passed; focused report (historical attachment removed) | Product/collection/image creation, mobile admin keyboard navigation and rejected-settings-save protection after the final UI fixes |
+| Browser console/network | No errors or failed requests in measured homepage journeys | Raw lab results (historical attachment removed); desktop/mobile tabs and search modal |
 | Accessibility | No axe violations in checked views | Home and admin order view using WCAG 2 A/AA, 2.1 AA and 2.2 AA rule tags; keyboard checks described below |
 | Responsive layout | No document overflow at checked widths | Home 1536/768/390/360, product/info 390, admin 390; screenshots below |
 | Client asset secret scan | 0 credential matches | Scanned final browser assets for generated owner/staff passwords and session secret |
@@ -59,7 +59,7 @@ Observed event durations are **not field INP**. The recorded interaction set is 
 
 ## Visual fidelity ledger
 
-Both generated concepts and final browser screenshots were opened for visual inspection with `view_image`. The homepage comparison used the same 1536 × 1024 viewport. [Opening concept](concept-home.png), [continuation concept](concept-continuation.png), [final opening](final-desktop-viewport.png), [final full page](final-desktop-full.png).
+Both generated concepts and final browser screenshots were opened for visual inspection with `view_image`. The homepage comparison used the same 1536 × 1024 viewport. Opening concept (historical attachment removed), continuation concept (historical attachment removed), final opening (historical attachment removed), final full page (historical attachment removed).
 
 | Comparison | Final result / reason for difference |
 |---|---|
@@ -74,11 +74,11 @@ The structural design matches the chosen concept closely; imagery and catalog co
 
 ## Screenshot gallery
 
-- [Desktop first viewport](final-desktop-viewport.png) and [complete desktop homepage](final-desktop-full.png).
-- [Mobile first viewport](final-mobile-viewport.png) and [complete mobile homepage](final-mobile-full.png).
-- [Product desktop](final-product-desktop.png), [product mobile / size-guide flow](product-mobile.png).
-- [Admin desktop](final-admin-desktop.png) and [admin mobile](final-admin-mobile.png).
-- [Sandbox order confirmation](order-confirmation.png).
+- Desktop first viewport (historical attachment removed) and complete desktop homepage (historical attachment removed).
+- Mobile first viewport (historical attachment removed) and complete mobile homepage (historical attachment removed).
+- Product desktop (historical attachment removed), product mobile / size-guide flow (historical attachment removed).
+- Admin desktop (historical attachment removed) and admin mobile (historical attachment removed).
+- Sandbox order confirmation (historical attachment removed).
 - Reference screenshots and measured dimensions: [reference audit](REFERENCE-AUDIT.md).
 
 Repeated automated owner logins correctly triggered the 12-attempt throttle. Only the seeded local owner’s transient counter was cleared to finish the focused rerun; the rate-limit implementation was not disabled or relaxed. Temporary QA catalog products/collections were removed after verification. Sample sandbox orders and audit records remain as useful evidence. Completed test traces were removed because they can contain test login values; raw passing reports contain no account passwords. Private `.env.local`, database and outbox are local-only and ignored by Git.
@@ -88,3 +88,5 @@ Repeated automated owner logins correctly triggered the 12-attempt throttle. Onl
 This is a single-node SQLite/media deployment model. Live payments, signed provider webhooks/refunds, outbound email, courier fulfilment and production tax rules are not configured. Checkout refuses live operation; it never presents a sandbox outcome as a real charge. Owner brand/domain/contact, verified product details and legally approved policies remain inputs for launch. See [feature-by-feature status](FEATURES.md) and [deployment instructions](../README.md).
 
 Checked Chrome only. Safari/Firefox, screen-reader testing, multi-instance concurrency, broad load/security testing, email deliverability, provider webhook replay behavior and live Google Rich Results validation remain outside this local verification. CSP still permits inline scripts for Next rendering; a nonce-based policy is a further production hardening step. Installing the Browser plugin would make future rendered UI checks easier to inspect directly in the app.
+
+Historical screenshots and generated JSON reports were removed during workspace cleanup on 18 November 2026. Current kidswear design assets and written findings are retained.
